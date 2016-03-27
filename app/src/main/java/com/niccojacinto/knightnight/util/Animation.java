@@ -1,6 +1,7 @@
 package com.niccojacinto.knightnight.util;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +18,13 @@ public class Animation {
 
     public Animation() {
         index = 0;
-        durationPerFrame = 1.0f;
+        durationPerFrame = 0.5f;
         transitionTime = durationPerFrame;
         anim = new ArrayList<Bitmap>();
     }
 
-    public void addFrame(int texId) {
-        anim.add(KNAssetManager.loadTexture(texId));
+    public void addFrame(int texId, int scale) {
+        anim.add(KNAssetManager.loadScaledTexture(texId, scale));
     }
 
     public Bitmap getFrame() {
@@ -34,8 +35,11 @@ public class Animation {
         transitionTime -= deltaTime;
         if (transitionTime <= 0) {
             transitionTime = durationPerFrame;
-            index = index < anim.size() ? index++ : 0;
+            index = index == anim.size()-1 ? 0 : index+1;
         }
+
+        //Log.d("Anim: ", transitionTime + "");
+        //Log.d("Anim: ", index+"");
     }
 
 }

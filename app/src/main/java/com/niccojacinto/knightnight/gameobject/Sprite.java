@@ -21,6 +21,12 @@ public class Sprite extends GameObject {
         gridPosition = startGridPos;
     }
 
+    protected Sprite (int texId, Vector2 startGridPos, int scale) {
+        super(texId, new Vector2(startGridPos.x * Game.tileSize, startGridPos.y * Game.tileSize), scale); // Calculate grid coordinates and place the player there
+        gridPosition = startGridPos;
+    }
+
+
     protected void update(float deltaTime) {
 
         // updates the graphical position of the sprite to the values of x,y

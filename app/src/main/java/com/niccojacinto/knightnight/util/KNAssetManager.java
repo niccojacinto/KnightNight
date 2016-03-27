@@ -39,6 +39,13 @@ public class KNAssetManager {
         return BitmapFactory.decodeResource(context.getResources(), id);
     }
 
+    public static Bitmap loadScaledTexture(int id, int scale) {
+
+        Bitmap tmp = BitmapFactory.decodeResource(context.getResources(), id);
+        return Bitmap.createScaledBitmap(tmp, scale, scale, true);
+    }
+
+
     public static Bitmap flip(Bitmap src) {
         Matrix matrix = new Matrix();
 

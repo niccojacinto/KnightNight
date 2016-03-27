@@ -47,14 +47,14 @@ public class TitleScreen extends Screen {
             if(i < 2) {
                 stringPaints[i] = new Paint();
                 stringPaints[i].setTypeface(titleFont);
-                stringPaints[i].setColor(Color.MAGENTA);
+                stringPaints[i].setColor(Color.WHITE);
                 stringPaints[i].setTextSize(200.0f);
                 stringPaints[i].setUnderlineText(false);
                 stringPaints[i].setTextAlign(Paint.Align.CENTER);
             }
             else {
                 stringPaints[i] = new Paint();
-                stringPaints[i].setColor(Color.MAGENTA);
+                stringPaints[i].setColor(Color.WHITE);
                 stringPaints[i].setTextSize(40.0f);
                 stringPaints[i].setUnderlineText(true);
                 stringPaints[i].setTextAlign(Paint.Align.CENTER);

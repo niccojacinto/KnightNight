@@ -52,6 +52,14 @@ public class GameObject {
         dstRect = new Rect((int)position.x, (int)position.y, (int)position.x + imageBounds.width(), (int)position.y + imageBounds.height());
     }
 
+    public GameObject(int textureId, Vector2 _position, int scale) {
+        texture = KNAssetManager.loadScaledTexture(textureId, scale);
+        Rect sRect = GameView.screenRect;
+        position = _position;
+        imageBounds = new Rect(0, 0, texture.getWidth(), texture.getHeight());
+        dstRect = new Rect((int)position.x, (int)position.y, (int)position.x + scale, (int)position.y + scale);
+    }
+
     // ------------ Constructors END --------
 
 

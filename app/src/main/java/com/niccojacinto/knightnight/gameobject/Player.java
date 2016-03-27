@@ -24,11 +24,10 @@ public class Player extends Sprite {
     private float moveSpeed; // the time it takes to get from one tile to an adjacent tile
     private PlayerState playerState;
     private Direction direction;
-    Matrix flipHorizontalMatrix; // Used to flip the direction of texture
 
     public Player(Vector2 gridStartPos) {
 
-        super(R.drawable.player, gridStartPos);
+        super(R.drawable.player, gridStartPos, 200);
         playerState = PlayerState.IDLE;
         direction = Direction.RIGHT;
 
@@ -40,10 +39,21 @@ public class Player extends Sprite {
             anims.add(new Animation());
         }
 
-        anims.get(PlayerState.IDLE.ordinal()).addFrame(R.drawable.player);
-        anims.get(PlayerState.MOVING.ordinal()).addFrame(R.drawable.player);
-        anims.get(PlayerState.ATTACKING.ordinal()).addFrame(R.drawable.player);
-        anims.get(PlayerState.DEAD.ordinal()).addFrame(R.drawable.player);
+        int scale=64;
+
+        anims.get(PlayerState.IDLE.ordinal()).addFrame(R.drawable.hero_idle0000,scale);
+        anims.get(PlayerState.IDLE.ordinal()).addFrame(R.drawable.hero_idle0001,scale);
+        anims.get(PlayerState.MOVING.ordinal()).addFrame(R.drawable.hero_walk0000,scale);
+        anims.get(PlayerState.MOVING.ordinal()).addFrame(R.drawable.hero_walk0001,scale);
+        anims.get(PlayerState.MOVING.ordinal()).addFrame(R.drawable.hero_walk0002,scale);
+        anims.get(PlayerState.MOVING.ordinal()).addFrame(R.drawable.hero_walk0003,scale);
+        anims.get(PlayerState.ATTACKING.ordinal()).addFrame(R.drawable.hero_attack0000,scale);
+        anims.get(PlayerState.ATTACKING.ordinal()).addFrame(R.drawable.hero_attack0001,scale);
+        anims.get(PlayerState.ATTACKING.ordinal()).addFrame(R.drawable.hero_attack0002,scale);
+        anims.get(PlayerState.ATTACKING.ordinal()).addFrame(R.drawable.hero_attack0003,scale);
+        anims.get(PlayerState.ATTACKING.ordinal()).addFrame(R.drawable.hero_attack0004,scale);
+        anims.get(PlayerState.ATTACKING.ordinal()).addFrame(R.drawable.hero_attack0005,scale);
+        anims.get(PlayerState.DEAD.ordinal()).addFrame(R.drawable.player,scale);
 
 
 
@@ -52,6 +62,7 @@ public class Player extends Sprite {
 
     public void receiveTouchEvent(Point touchPos) {
         if (touchPos.x < GameView.screenRect.width()/2) {
+
             direction = Direction.LEFT;
             position.x -= 32;
         } else {
@@ -59,6 +70,8 @@ public class Player extends Sprite {
             direction = Direction.RIGHT;
             position.x += 32;
         }
+
+        playerState = PlayerState.MOVING;
     }
 
     public void update(float deltaTime) {
@@ -66,14 +79,15 @@ public class Player extends Sprite {
 
         // Using Ordinal here, make sure the animations are loaded in the right order as the enum
         anims.get(playerState.ordinal()).Play(deltaTime);
-        texture =  anims.get(PlayerState.IDLE.ordinal()).getFrame();
+        texture =  anims.get(playerState.ordinal()).getFrame();
+        if (direction == Direction.LEFT)
+            texture = KNAssetManager.flip(texture);
 
     }
 
     @Override
     public void draw(Canvas canvas) {
-        if (direction == Direction.LEFT)
-            texture = KNAssetManager.flip(texture);
+
 
         super.draw(canvas);
 
