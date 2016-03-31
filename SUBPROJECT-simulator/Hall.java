@@ -4,9 +4,6 @@
  * -The Hall extends the Room, but this doesn't make much semantic sense. Oh well!*/
 class Hall extends Room
 {
-  /* When facing < 0, the halls are horizontal.
-   * When facing >= 0, the halls are vertical.
-   * */
   private boolean facingHorizontal;
   public Hall(int mx, int my, int mwidth, int mheight, boolean mfacingHorizontal){
      super(mx,my,

@@ -1,4 +1,5 @@
 import java.util.Random;
+
 /*A tile-based Map consisting of Rooms and Halls.*/
 class Map {
   private int width;
@@ -54,7 +55,7 @@ class Map {
     //When the open room list is empty, the map is complete.
   }
   
-  //Inserts the room and hall data into the string array.
+  //Inserts the room and hall data into the char array.
   public void generateData(){
     for (int x = 0; x < width; x++){
       for (int y = 0; y < height; y++){

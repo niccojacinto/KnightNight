@@ -36,7 +36,7 @@ class Room {
   protected void drawVerticalWalls(char[][] data){
     for (int i= 0; i < height;i++){ 
        //This redundantly draws over some Horizontal walls.
-       //This is intentional, for when the Hall calls only drawWall function.
+       //This is intentional, for scenarios when the Hall subclass calls only this function.
        data[x][y + i] = 'W';
        data[x + width - 1][y + i] = 'W';
     }
