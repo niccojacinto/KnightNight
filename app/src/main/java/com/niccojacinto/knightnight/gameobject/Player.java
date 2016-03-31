@@ -39,7 +39,7 @@ public class Player extends Sprite {
             anims.add(new Animation());
         }
 
-        int scale=64;
+        int scale=256;
 
         anims.get(PlayerState.IDLE.ordinal()).addFrame(R.drawable.hero_idle0000,scale);
         anims.get(PlayerState.IDLE.ordinal()).addFrame(R.drawable.hero_idle0001,scale);
