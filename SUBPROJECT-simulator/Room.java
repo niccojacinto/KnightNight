@@ -49,6 +49,22 @@ class Room {
     return height;
   }
   
+  public int getDimensionAlongDirection(Direction dir){
+    if (dir == Direction.LEFT || dir == Direction.RIGHT){
+      return width;
+    } else {
+      return height;
+    }
+  }
+  
+  public int getDimensionOppositeDirection(Direction dir){
+    if (dir == Direction.LEFT || dir == Direction.RIGHT){
+      return height;
+    } else {
+      return width;
+    }
+  }
+  
   //Get a X-coordinate that corresponds to a Wall in this room.
   public int getRandomX(int constraint){
     if (constraint > width) {throw new Error("The constraint cannot be greater than the width.");}
@@ -73,15 +89,15 @@ class Room {
       throw new Error("Method called in an illogical state. There are no sides free.");
     }
   }
-  
-  //Closes a side of this room.
-  public void closeSide(Direction direction){
-    isSideFree[direction.index()] = false;
-  }
-  
   //Returns if this room's sides are usable.
   public boolean areSidesFree(){
     return isSideFree[0] || isSideFree[1] || isSideFree[2] || isSideFree[3];
+  }
+  
+  /*Mutator*/
+  //Closes a side of this room.
+  public void closeSide(Direction direction){
+    isSideFree[direction.index()] = false;
   }
   
   /*Room-room collision methods*/

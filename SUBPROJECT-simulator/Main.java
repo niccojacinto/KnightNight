@@ -24,8 +24,8 @@ class Main {
     
     /*Test 2: Testing Map*/
     
-    Map map = new Map(33,60);
-    for(int i = 0; i < 100; i++){
+    Map map; //= new Map(33,60);
+    for(int i = 0; i < 10; i++){
       map = new Map(50,50);
       map.out();
     }
