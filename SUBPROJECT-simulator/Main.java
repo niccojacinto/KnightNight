@@ -23,8 +23,12 @@ class Main {
     */
     
     /*Test 2: Testing Map*/
+    
     Map map = new Map(33,60);
-    map.out();
+    for(int i = 0; i < 100; i++){
+      map = new Map(50,50);
+      map.out();
+    }
     //First test Halls
     //Then test Halls+Rooms
   }

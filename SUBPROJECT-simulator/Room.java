@@ -52,13 +52,13 @@ class Room {
   //Get a X-coordinate that corresponds to a Wall in this room.
   public int getRandomX(int constraint){
     if (constraint > width) {throw new Error("The constraint cannot be greater than the width.");}
-    return Map.getRandomInt(x, x + width - constraint);
+    return MapGen.getRandomInt(x, x + width - constraint);
   }
   
   //Get a Y-coordinate that corresponds to a Wall in this room.
   public int getRandomY(int constraint){
     if (constraint > height) {throw new Error("The constraint cannot be greater than the height.");}
-    return Map.getRandomInt(y, y + height - constraint);
+    return MapGen.getRandomInt(y, y + height - constraint);
   }
     
   //Returns a direction of a unused side of this room.
@@ -66,7 +66,7 @@ class Room {
     if (areSidesFree()){
       int index;
       do {
-        index = Map.getRandomInt(0,3);
+        index = MapGen.getRandomInt(0,3);
       } while (!isSideFree[index]);
       return Direction.getDirection(index);
     } else {

@@ -1,58 +1,37 @@
 import java.util.Random;
 import java.util.ArrayList;
 
-/*A tile-based Map consisting of Rooms and Halls.*/
-class Map {
+public class MapGen{
   private static Random rng = new Random();
   
-  private int width;
-  private int height;
-  
-  private ArrayList<Room> rooms;
-  private ArrayList<Hall> halls;
-  private char[][] data;//[x][y] grid based index
-  public Map(int mwidth, int mheight){
-    width = mwidth;
-    height = mheight;
-    data = new char[mwidth][mheight];
-    
-    //init map
-    generateMap();
-    generateData();
-  }
+  private static final int ROOM_WIDTH_MIN = 5;
+  private static final int ROOM_WIDTH_MAX = 9;
+  private static final int ROOM_HEIGHT_MIN = 5;
+  private static final int ROOM_HEIGHT_MAX = 9;
+  private static final int HALL_SHORT_SIDE_MIN = 3;
+  private static final int HALL_SHORT_SIDE_MAX = 6;
+  private static final int HALL_LONG_SIDE_MIN = 6;
+  private static final int HALL_LONG_SIDE_MAX = 12;
   
   //Procedurally generate a fine Map.
-  public void generateMap(){
-    /*Constants for mapgen*/
-    final int ROOM_WIDTH_MIN = 5;
-    final int ROOM_WIDTH_MAX = 9;
-    final int ROOM_HEIGHT_MIN = 5;
-    final int ROOM_HEIGHT_MAX = 9;
-    final int HALL_SHORT_SIDE_MIN = 3;
-    final int HALL_SHORT_SIDE_MAX = 6;
-    final int HALL_LONG_SIDE_MIN = 6;
-    final int HALL_LONG_SIDE_MAX = 12;
+  public static void generateMap(ArrayList<Room> closedRooms, ArrayList<Hall> halls, Room mapBounds){
+    //0. Set up variables
     
-    //Set up variables
-    Room mapBounds = new Room(0, 0, width, height);
     ArrayList<Room> openRooms = new ArrayList<Room>();
-    rooms = new ArrayList<Room>(); //Closed list of rooms.
-    halls = new ArrayList<Hall>();
+    
     Room currentRoom;
-    Room tempRoom;
-    Hall tempHall;
     int tempWidth;
     int tempHeight;
+    //Room tempRoom;
+    //Hall tempHall;
+    /*
     Direction tempDirection = Direction.UP;
+    */
     
-    /*Algorithm starts here!!*/
-    //Create a room in the middle of random size
+    //1. Start with a room in the middle of random size
     tempWidth = getRandomInt(ROOM_WIDTH_MIN, ROOM_WIDTH_MAX);
     tempHeight = getRandomInt(ROOM_WIDTH_MIN, ROOM_WIDTH_MAX);
-    currentRoom = new Room(width/2 - tempWidth/2, 
-                           height/2 - tempHeight/2, 
-                           tempWidth, 
-                           tempHeight);
+    currentRoom = new Room(mapBounds.width()/2 - tempWidth/2,  mapBounds.height()/2 - tempHeight/2, tempWidth, tempHeight);
     
     if (currentRoom.isOutside(mapBounds)){
       throw new Error("The initial room is bigger than the map. The map size needs to be increased.");
@@ -60,13 +39,10 @@ class Map {
       openRooms.add(currentRoom);
     }
     
+    /*TEST CODE*/
+    closedRooms.add(currentRoom);
     
-    //functions needed:
-    //generate a hall at a certain coordinate, and a room at a certain end of a hall
-    //Hall size should be constrained by room wall size.
-    //the new room size is also constrained by the ha'lls size.
-    
-    
+    /*
     //When the open room list is empty, the map is complete.
     while(openRooms.size() != 0){
       //Randomly iterate the list of open rooms.
@@ -76,31 +52,39 @@ class Map {
       //Randomly pick a free side
       tempDirection = currentRoom.getFreeSide();
       
-      //Try to attach a hall and a room to that one side.
-      int tempHallShortSide = getRandomInt(HALL_SHORT_SIDE_MIN, HALL_SHORT_SIDE_MAX);
-      int tempHallLongSide = getRandomInt(HALL_LONG_SIDE_MIN, HALL_LONG_SIDE_MAX);
-      int tempRoomWidth = getRandomInt(ROOM_WIDTH_MIN, ROOM_WIDTH_MAX);
-      int tempRoomHeight = getRandomInt(ROOM_HEIGHT_MIN, ROOM_HEIGHT_MAX);
-      
-      
-       //do some ternary operator, add greater of constant or room dimension
+      //Calculate min and max bounds of the hall
       int hallLongSideMin;
       int hallShortSideMin;
+      int hallLongSideMax;
+      int hallShortSideMax;
       if (tempDirection.isHorizontal()){
         hallLongSideMin = HALL_LONG_SIDE_MIN;
         hallShortSideMin = HALL_SHORT_SIDE_MIN > currentRoom.height() ? HALL_SHORT_SIDE_MIN : currentRoom.height();
+        hallShortSideMax = HALL_SHORT_SIDE_MAX > currentRoom.height() ? currentRoom.width() : HALL_SHORT_SIDE_MAX;
+        hallLongSideMax = HALL_LONG_SIDE_MAX;
       } else {
-        hallLongSideMin = HALL_LONG_SIDE_MIN > currentRoom.width() ? HALL_LONG_SIDE_MIN : currentRoom.width();
-        hallShortSideMin = HALL_SHORT_SIDE_MIN;
+        hallLongSideMin = HALL_LONG_SIDE_MIN;
+        hallShortSideMin = HALL_SHORT_SIDE_MIN > currentRoom.width() ? HALL_SHORT_SIDE_MIN : currentRoom.width();
+        hallShortSideMax = HALL_SHORT_SIDE_MAX > currentRoom.width() ? currentRoom.width() : HALL_SHORT_SIDE_MAX;
+        hallLongSideMax = HALL_LONG_SIDE_MAX;
       }
-        
+      
+      //do random bounds checking..
+      
+      int tempHallShortSide = getRandomInt(hallShortSideMin, hallShortSideMax);
+      int tempHallLongSide = getRandomInt(hallLongSideMin, hallLongSideMax);
+      int tempRoomWidth = getRandomInt(ROOM_WIDTH_MIN, ROOM_WIDTH_MAX);
+      int tempRoomHeight = getRandomInt(ROOM_HEIGHT_MIN, ROOM_HEIGHT_MAX);
+      
       boolean successful = false;
-      boolean cannotCreateNewHallAndRoom = tempHallLongSide < HALL_LONG_SIDE_MIN
-          || tempHallShortSide < HALL_SHORT_SIDE_MIN
-          || tempRoomWidth < ROOM_WIDTH_MIN
-          || tempRoomHeight < ROOM_HEIGHT_MIN;
+      boolean cannotCreateNewHallAndRoom = tempHallLongSide < hallLongSideMin
+        || tempHallShortSide < hallShortSideMin
+        || tempRoomWidth < ROOM_WIDTH_MIN
+        || tempRoomHeight < ROOM_HEIGHT_MIN;
       System.out.println("1a open room list size: " + openRooms.size());
       System.out.println("1b current room: " + currentRoom.width() + ", " + currentRoom.height());
+      System.out.println("1c current direction: " + tempDirection);
+      //Try to create the hall and room iteratively
       while (!successful && !cannotCreateNewHallAndRoom){
         System.out.println("2a trying hall size: " + tempHallShortSide + ", " + tempHallLongSide);
         //Create a random hall attached to the Room.
@@ -112,7 +96,7 @@ class Map {
         //Check if they overlap with any openRooms, closedRooms, or Halls.
         //Make the check one size bigger than usual - so that created walls are not Adjacent to any other wall.
         //If they overlap, try again with smaller size constraints for either Hall or Room.
-        if (/*checkForOverlaps(tempRoom, openRooms) && */checkForOverlaps(tempHall, currentRoom, openRooms)) {
+        if (/*checkForOverlaps(tempRoom, openRooms) && *//*checkForOverlaps(tempHall, currentRoom, openRooms)) {
           if (rng.nextInt() < 0.5){
             if (rng.nextInt() < 0.8){
               tempHallLongSide--;
@@ -150,39 +134,15 @@ class Map {
         openRooms.remove(currentRoom);
       }//if
     }//while(openRooms.size() != 0)
+    */
   }//public void generateMap(){
   
-  //Inserts the room and hall data into the char array.
-  public void generateData(){
-    for (int x = 0; x < width; x++){
-      for (int y = 0; y < height; y++){
-        data[x][y] = 'X';
-      }
-    }
-    
-    for (int i = 0; i < rooms.size(); i++){
-      rooms.get(i).addToData(data);
-    }
-    
-    for (int i = 0; i < halls.size(); i++){
-      halls.get(i).addToData(data);
-    }
+  //Returns a pseudo random number between the two ranges inclusive.
+  public static int getRandomInt(int min, int max){
+    return rng.nextInt(++max - min) + min;
   }
   
-  //Outputs the data as a String and prints it.
-  public void out(){
-    String str;
-    System.out.println("MAP: ");
-    for (int y = 0; y < height; y++){
-      str = "";
-      for (int x = 0; x < width; x++){
-        str += data[x][y];
-      }
-      System.out.println(str);
-    }
-  }
-  
-  private Hall generateHallAt(Room r, Direction d, int shortSide, int longSide){
+  private static Hall generateHallAt(Room r, Direction d, int shortSide, int longSide){
     switch (d){
       case LEFT:
         return new Hall( r.X() - longSide, r.getRandomY(shortSide), shortSide, longSide, d);
@@ -197,7 +157,7 @@ class Map {
     }
   }
   
-  private Room generateRoomAt(Hall h, Direction d, int width, int height){
+  private static Room generateRoomAt(Hall h, Direction d, int width, int height){
     switch (d){
       case LEFT:
         return null;
@@ -213,7 +173,7 @@ class Map {
   }
   
   //Checks if a given hall and room overlap with any other room or hall. Ignores current room.
-  private boolean checkForOverlaps(Room r, Room cr, ArrayList<Room> openRooms){
+  private static boolean checkForOverlaps(Room r, Room cr, ArrayList<Room> openRooms, ArrayList<Room> closedRooms, ArrayList<Hall> halls){
     //Check open rooms
     for (int i = 0; i < openRooms.size(); i++){
       if (openRooms.get(i) != cr && openRooms.get(i) != r && r.overlaps(openRooms.get(i), 1)){
@@ -222,8 +182,8 @@ class Map {
     }
     
     //Check closed rooms
-    for (int i = 0; i < rooms.size(); i++){
-      if (openRooms.get(i) != cr && r.overlaps(rooms.get(i), 1)){
+    for (int i = 0; i < closedRooms.size(); i++){
+      if (closedRooms.get(i) != cr && r.overlaps(closedRooms.get(i), 1)){
         return true;
       }
     }
@@ -236,10 +196,5 @@ class Map {
     }
     
     return false;
-  }
-  
-  //Returns a pseudo random number between the two ranges inclusive.
-  public static int getRandomInt(int min, int max){
-    return rng.nextInt(++max - min) + min;
   }
 }
