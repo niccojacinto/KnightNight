@@ -54,6 +54,8 @@ public class MapGen{
         openRooms.remove(currentRoom);
       }//if
     }//while(openRooms.size() != 0)
+    
+    System.out.println("Map generated!");
   }//public void generateMap(){
   
   //Returns a pseudo random number between the two ranges inclusive.
@@ -111,7 +113,7 @@ public class MapGen{
       
       //4c. Check for Hall And Room OutOfBounds & Overlaps.
       if (overlapHall.isOutside(mapBounds) || checkForOverlaps(overlapHall, currentRoom, openRooms, closedRooms, halls)
-            || overlapRoom.isOutside(mapBounds) || checkForOverlaps(overlapRoom, newHall, openRooms, closedRooms, halls)){
+            || overlapRoom.isOutside(mapBounds) || checkForOverlaps(overlapRoom, overlapHall, openRooms, closedRooms, halls)){
         //Decrement dimensions of either Hall or Room.
         if (rng.nextInt() < 0.5){
           if (rng.nextInt() < 0.8){
@@ -132,7 +134,6 @@ public class MapGen{
         System.out.println("4c. Created room of dimensions: w-" + newRoom.width() + ", h-" + newRoom.height()); 
         halls.add(newHall);
         openRooms.add(newRoom);
-        //closedRooms.add(newRoom); //TEST
         return;
       }
     } while (!areDimensionsBelowMinimum(hallShortSide, hallLongSide, roomShortSide, roomLongSide, currentDirection));
