@@ -35,7 +35,7 @@ class Map {
   private void generateMap(){
     rooms = new ArrayList<Room>(); 
     halls = new ArrayList<Hall>();
-    MapGen.generateMap(rooms, halls, new Room(0, 0, width, height));
+    MapGen.generateMap(rooms, halls, new Room(0, 0, width-1, height-1));
   }//public void generateMap(){
   
   //Inserts the room and hall data into the char array.
