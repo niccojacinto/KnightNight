@@ -28,6 +28,7 @@ class Room {
   
   //Adds the Room to the Map's data.
   public void addToData(char[][] data){
+    drawFloor(data);
     drawHorizontalWalls(data);
     drawVerticalWalls(data);
   }
@@ -119,6 +120,14 @@ class Room {
   }
   
   /*Draw methods*/
+  protected void drawFloor(char[][] data){
+    for (int i=0; i < width;i++){
+      for (int j=0; j < height;j++){
+        data[x + i][y + j] = 'O';
+      }
+    }
+  }
+  
   protected void drawHorizontalWalls(char[][] data){
     for (int i=0; i < width;i++){
       data[x + i][y] = 'W';

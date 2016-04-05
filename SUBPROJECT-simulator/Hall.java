@@ -12,10 +12,15 @@ class Hall extends Room
            (mdirection.isVertical() ? mls + 2 : mss));
      direction = mdirection;
   }
+  
+  public Direction direction(){
+    return direction;
+  }
    
    @Override
    public void addToData(char[][] data){
-     clearHall(data);
+     //clearHall(data);
+     drawFloor(data);
      if (direction.isHorizontal()){
        drawHorizontalWalls(data);
      } else{

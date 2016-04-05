@@ -22,14 +22,12 @@ class Main {
     System.out.println("5. Expecting true: " + r[5].isOutside(r[0]));
     */
     
-    /*Test 2: Testing Map*/
+    /*Test 3: Testing Map*/
     
     Map map; //= new Map(33,60);
-    for(int i = 0; i < 10; i++){
-      map = new Map(50,50);
+    for(int i = 0; i < 1; i++){
+      map = new Map(100,100);
       map.out();
     }
-    //First test Halls
-    //Then test Halls+Rooms
   }
 }
