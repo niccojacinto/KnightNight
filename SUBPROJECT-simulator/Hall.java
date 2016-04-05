@@ -5,11 +5,12 @@
 class Hall extends Room
 {
   private Direction direction;
-  public Hall(int mx, int my, int mss, int mls, Direction mdirection){
+  public Hall(int mx, int my, int mss, int mls, Direction mdirection, int mdepth){
      super(mx,my,
            //These crazy offsets has to do with accounting for the hall overlapping with the room.
            (mdirection.isHorizontal() ? mls + 2 : mss), 
-           (mdirection.isVertical() ? mls + 2 : mss));
+           (mdirection.isVertical() ? mls + 2 : mss),
+           mdepth); 
      direction = mdirection;
   }
   

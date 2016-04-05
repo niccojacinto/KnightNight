@@ -2,16 +2,20 @@ import java.util.ArrayList;
 
 /*A tile-based Map consisting of Rooms and Halls.*/
 class Map {
+  private static final char VOID = '@';
+  
+  //Map size
   private int width;
   private int height;
   
+  //Actual map data
   private ArrayList<Room> rooms;
   private ArrayList<Hall> halls;
+  private ArrayList<SpecialObject> objects;
   private char[][] data;//[x][y] grid based index
   public Map(int mwidth, int mheight){
     width = mwidth;
     height = mheight;
-    data = new char[mwidth][mheight];
     
     //init map
     generateMap();
@@ -35,14 +39,17 @@ class Map {
   private void generateMap(){
     rooms = new ArrayList<Room>(); 
     halls = new ArrayList<Hall>();
-    MapGen.generateMap(rooms, halls, new Room(0, 0, width-1, height-1));
+    objects = new ArrayList<SpecialObject>();
+    MapGen.generateMap(rooms, halls, objects, new Room(0, 0, width-1, height-1, -1));
   }//public void generateMap(){
   
   //Inserts the room and hall data into the char array.
   private void generateData(){
+    data = new char[width][height];
+    
     for (int x = 0; x < width; x++){
       for (int y = 0; y < height; y++){
-        data[x][y] = 'X';
+        data[x][y] = VOID;
       }
     }
     
@@ -52,6 +59,10 @@ class Map {
     
     for (int i = 0; i < halls.size(); i++){
       halls.get(i).addToData(data);
+    }
+    
+    for (int i = 0; i < objects.size(); i++){
+      objects.get(i).addToData(data);
     }
   }
 }

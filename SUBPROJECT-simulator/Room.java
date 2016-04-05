@@ -5,6 +5,9 @@ class Room {
   private static final int MIN_WIDTH = 3;
   private static final int MIN_HEIGHT = 3;
   
+  private static final char FLOOR = '-';
+  private static final char WALL = '|';
+  
   //x and y represents top-left corner
   protected int x; 
   protected int y;
@@ -12,18 +15,18 @@ class Room {
   protected int height;
   
   private boolean[] isSideFree;
-  public Room(int mx, int my, int mwidth, int mheight){
+  private int depth; //Describes how far this room is from the main room. 
+  public Room(int mx, int my, int mwidth, int mheight, int mdepth){
     x = mx;
     y = my;
     width = mwidth;
     height = mheight;
-    if (width < MIN_WIDTH || height < MIN_HEIGHT){
-       throw new Error("Room Width/Height size is below minimum: " + width + ", " + height);
-    }
+    if (width < MIN_WIDTH || height < MIN_HEIGHT)
+    {throw new Error("Room Width/Height size is below minimum: " + width + ", " + height);}
+    depth = mdepth;
     isSideFree = new boolean[4];
-    for (int i = 0; i < isSideFree.length; i++){
-      isSideFree[i] = true;
-    }
+    for (int i = 0; i < isSideFree.length; i++)
+    {isSideFree[i] = true;}
   }
   
   //Adds the Room to the Map's data.
@@ -48,6 +51,10 @@ class Room {
   
   public int height(){
     return height;
+  }
+  
+  public int depth(){
+    return depth;
   }
   
   public int getDimensionAlongDirection(Direction dir){
@@ -76,6 +83,14 @@ class Room {
   public int getRandomY(int constraint){
     if (constraint > height) {throw new Error("The constraint cannot be greater than the height.");}
     return MapGen.getRandomInt(y, y + height - constraint);
+  }
+  
+  public int getCenterX(){
+    return x + width / 2;
+  }
+  
+  public int getCenterY(){
+    return y + height / 2;
   }
     
   //Returns a direction of a unused side of this room.
@@ -123,15 +138,15 @@ class Room {
   protected void drawFloor(char[][] data){
     for (int i=0; i < width;i++){
       for (int j=0; j < height;j++){
-        data[x + i][y + j] = 'O';
+        data[x + i][y + j] = FLOOR;
       }
     }
   }
   
   protected void drawHorizontalWalls(char[][] data){
     for (int i=0; i < width;i++){
-      data[x + i][y] = 'W';
-      data[x + i][y + height - 1] = 'W';
+      data[x + i][y] = WALL;
+      data[x + i][y + height - 1] = WALL;
     }
   }
   
@@ -139,8 +154,8 @@ class Room {
     for (int i= 0; i < height;i++){ 
        //This redundantly draws over some Horizontal walls.
        //This is intentional, for scenarios when the Hall subclass calls only this function.
-       data[x][y + i] = 'W';
-       data[x + width - 1][y + i] = 'W';
+       data[x][y + i] = WALL;
+       data[x + width - 1][y + i] = WALL;
     }
   }
 }
