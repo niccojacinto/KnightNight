@@ -65,6 +65,8 @@ public class MapGen{
       objects.add(new SpecialObject(startingRoom.getCenterX(), startingRoom.getCenterY(), ObjectType.STARTPOINT));
       Room endRoom = getRoomWithMaxDepth(closedRooms);
       objects.add(new SpecialObject(endRoom.getCenterX(), endRoom.getCenterY(), ObjectType.ENDPOINT));
+      Room keyRoom = getRandomRoomIgnoring(startingRoom, endRoom, closedRooms);
+      objects.add(new SpecialObject(keyRoom.getCenterX(), keyRoom.getCenterY(), ObjectType.KEY));
     }
     
   }//public void generateMap(){
@@ -249,5 +251,23 @@ public class MapGen{
       }
     }
     return maxRoom;
+  }
+  
+  //Tries to return a random room while ignoring two specified rooms.
+  private static Room getRandomRoomIgnoring(Room room1, Room room2, ArrayList<Room> rooms){
+    //Assumptions: 
+    //-that the rooms list is all unique. If it's not, then this can loop infinitely.
+    //-That room1 and room2 are in rooms.
+    
+    if (rooms.size() > 2){
+      Room randomRoom;
+      do {
+        randomRoom = rooms.get(getRandomInt(0, rooms.size() - 1));
+      } while(randomRoom == room1 || randomRoom == room2);
+      return randomRoom;
+    } else {
+      //If there's only two rooms, just return any of them.
+      return rng.nextInt() > 0.5 ? room2 : room1;
+    }
   }
 }

@@ -2,7 +2,7 @@
 public enum ObjectType{
   STARTPOINT('S'), 
     ENDPOINT('E'),
-    KEY('$');
+    KEY('K');
   
   private char value;
   
