@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.knightnight.game.KnightNight;
+import com.knightnight.game.Util.Direction;
+import java.lang.*;
 
 import java.util.ArrayList;
 
@@ -29,22 +31,26 @@ public class Player extends Sprite{
     TextureRegion currentFrame;
     float animTime;
     float moveSpeed;
+    boolean isFlipped;
+    float lerpTime;
+    float lcf;
 
     public Player (KnightNight _game) {
         super();
         game = _game;
         playerState = PlayerState.IDLE;
-        gridPosition = new Vector2(0, 0);
-        position = new Vector2(50, 50);
-        targetPos = position;
 
+        position = new Vector2(64, 64);
+        gridPosition = new Vector2(position.x/32, position.y/32);
+        isFlipped = false;
 
         animations = new ArrayList<Animation>(PlayerState.values().length);
         //spritesheets = new ArrayList<Texture>(PlayerState.values().length);
         //Gdx.app.debug(TAG, PlayerState.values().length + "");
 
         animTime = 0;
-        moveSpeed = 0.5f;
+        moveSpeed = 32.0f;
+        lcf = 0f;
 
         setSize(64, 64);
         setPosition(KnightNight.WIDTH / 2, KnightNight.HEIGHT / 2);
@@ -58,31 +64,82 @@ public class Player extends Sprite{
         animFrames = new TextureRegion[2];
         animFrames[0] = new TextureRegion((new Texture("Hero/hero_idle0000.png")));
         animFrames[1] = new TextureRegion((new Texture("Hero/hero_idle0001.png")));
-        tmpAnim = new Animation(1.0f, animFrames);
+        tmpAnim = new Animation(0.25f, animFrames);
+        animations.add(tmpAnim);
+        animFrames = new TextureRegion[4];
+        animFrames[0] = new TextureRegion((new Texture("Hero/hero_walk0000.png")));
+        animFrames[1] = new TextureRegion((new Texture("Hero/hero_walk0001.png")));
+        animFrames[2] = new TextureRegion((new Texture("Hero/hero_walk0002.png")));
+        animFrames[3] = new TextureRegion((new Texture("Hero/hero_walk0003.png")));
+        tmpAnim = new Animation(0.25f, animFrames);
         animations.add(tmpAnim);
 
     }
 
     public void onTap(int x, int y) {
-        Vector2 endPos = new Vector2(x, y);
-        Vector2 normalDir = endPos.sub(position);
-        move(normalDir);
+        Vector2 p = new Vector2(x-KnightNight.WIDTH/2, KnightNight.HEIGHT/1.3f-y);
+        Direction dir;
+
+        // Gdx.app.debug(TAG, "(" + p.x + ", " + p.y + ")");
+        if (Math.abs(p.x) > Math.abs(p.y)) dir = ( p.x <= 0 ) ? Direction.LEFT : Direction.RIGHT;
+        else dir = ( p.y <= 0 ) ? Direction.DOWN : Direction.UP;
+
+        move(dir);
     }
 
-    private void move(Vector2 newPos) {
-        targetPos = newPos;
+    private void move(Direction dir) {
+        lcf=0;
+
+        switch (dir) {
+            case LEFT:
+                gridPosition.x--;
+                isFlipped = true;
+                break;
+            case RIGHT:
+                gridPosition.x++;
+                isFlipped = false;
+                break;
+            case UP:
+                gridPosition.y++;
+                isFlipped = false;
+                break;
+            case DOWN:
+                gridPosition.y--;
+                isFlipped = true;
+                break;
+            default:
+                break;
+        }
+        playerState = PlayerState.WALKING;
     }
 
     public void update(float delta) {
         animTime += Gdx.graphics.getDeltaTime();
-        // position.lerp(targetPos, 1);
+        if (lcf >= 1) {
+            playerState = PlayerState.IDLE;
+            lcf = 0;
+
+        }
+
+        lcf += 2 * delta;
+        // Gdx.app.debug(TAG, "lcf: " + lcf);
+        position.set(position.lerp(new Vector2(gridPosition.x *32, gridPosition.y*32), lcf));
         setPosition(position.x, position.y);
     }
+
 
     public void render(float delta) {
         update(delta);
 
-        currentFrame = animations.get(playerState.ordinal()).getKeyFrame(animTime, true);  // #16
+        currentFrame = animations.get(playerState.ordinal()).getKeyFrame(animTime, true);
+
+        if(!currentFrame.isFlipX() && isFlipped) {
+            currentFrame.flip(true, false);
+        } else if (currentFrame.isFlipX() && !isFlipped) {
+            currentFrame.flip(true, false);
+        }
+
+
         setRegion(currentFrame);
         draw(game.batch);
     }
