@@ -36,13 +36,13 @@ public class Player extends Sprite{
     float lerpTime;
     float lcf;
 
-    public Player (KnightNight _game) {
+    public Player (KnightNight _game, int gridX, int gridY) {
         super();
         game = _game;
         playerState = PlayerState.IDLE;
 
-        position = new Vector2(64, 64);
-        gridPosition = new Vector2(position.x/32, position.y/32);
+        position = new Vector2(64, 64); // ???
+        gridPosition = new Vector2(gridX, gridY);
         isFlipped = false;
 
         animations = new ArrayList<Animation>(PlayerState.values().length);
@@ -87,7 +87,7 @@ public class Player extends Sprite{
 
     }
 
-    public void onTap(int x, int y) {
+    public void onTap(int x, int y)     {
         Vector2 p = new Vector2(x-KnightNight.WIDTH/2, KnightNight.HEIGHT/1.3f-y);
         Direction dir;
 

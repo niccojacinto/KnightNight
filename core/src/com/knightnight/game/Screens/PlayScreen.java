@@ -32,8 +32,8 @@ public class PlayScreen implements Screen {
     private Player player;
     private Map map;
     private static char[][] mapGrid;
-
     public PlayScreen(KnightNight _game) {
+
         game = _game;
         bg = new Texture("tavern.png");
         cam = new OrthographicCamera(KnightNight.WIDTH, KnightNight.HEIGHT);
@@ -43,8 +43,6 @@ public class PlayScreen implements Screen {
         map = new Map(50, 50);
         loadMap(map.getData());
 
-
-        player = new Player(game);
         enemies.add(new Slime(game, 1,1));
         enemies.add(new Slime(game, 3,3));
     }
@@ -121,19 +119,12 @@ public class PlayScreen implements Screen {
                         gameObjects.add(tmpw);
                         //Gdx.app.debug("Wall: ", "Created Wall");
                         break;
-                    case MapConstants.FLOOR:
-                        {
-                            Floor tmpf = new Floor(game, x, y);
-                            gameObjects.add(tmpf);
-                        }
-                        break;
                     case MapConstants.STARTPOINT:
+                        player = new Player(game, x, y);
                     case MapConstants.ENDPOINT:
                     case MapConstants.KEY:
-                        {
-                            Floor tmpf = new Floor(game, x, y);
-                            gameObjects.add(tmpf);
-                        }
+                    case MapConstants.FLOOR:
+                        makeAFloor(x,y);
                         break;
                     case MapConstants.VOID:
                         Void tmpv = new Void(game, x, y);
@@ -144,6 +135,11 @@ public class PlayScreen implements Screen {
                 }
             }
         }
+    }
+
+    private void makeAFloor(int x, int y) {
+        Floor tmpf = new Floor(game, x, y);
+        gameObjects.add(tmpf);
     }
 
     public static int isFree(int x, int y) {
