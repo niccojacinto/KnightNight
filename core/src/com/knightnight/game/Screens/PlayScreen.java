@@ -37,13 +37,13 @@ public class PlayScreen implements Screen {
         game = _game;
         bg = new Texture("tavern.png");
         cam = new OrthographicCamera(KnightNight.WIDTH, KnightNight.HEIGHT);
-        cam.zoom -= 0.75f;
+        cam.zoom = 2f;
         gameObjects = new ArrayList<Sprite>();
         enemies = new ArrayList<Slime>();
         map = new Map(50, 50);
         loadMap(map.getData());
 
-        spawnSlimes(5);
+        spawnSlimes(6);
     }
 
     @Override
@@ -142,12 +142,23 @@ public class PlayScreen implements Screen {
     }
 
     private void spawnSlimes(int number) {
-        for (int i = 0; i < number; i++ ){
-            int x =
-            enemies.add(new Slime)
+        if (player == null){
+            Gdx.app.debug("spawnSlime: ", "Player is null; slimes cannot be spawned.");
+            return;
         }
-        enemies.add(new Slime(game, 1,1));
-        enemies.add(new Slime(game, 3,3));
+        for (int i = 0; i < number; i++ ){
+            //For every slime, it'll try 4 times to spawn it in a free location.
+            for (int attempts = 0; attempts < 8; attempts++) {
+                int x = map.getXNear((int) player.gridPosition.x);
+                int y = map.getYNear((int) player.gridPosition.y);
+                Gdx.app.debug("spawnSlime: ", "Checking coordinates ("+x + "," + y + "), result: " + isFree(x, y));
+                if (isFree(x, y) == 1) {
+                    Gdx.app.debug("spawnSlime: ", "Created ("+x + "," + y + ")" );
+                    enemies.add(new Slime(game, x, y));
+                    break;
+                }
+            }
+        }
     }
 
     //Returns 1 if the tile is a floor.
@@ -168,7 +179,7 @@ public class PlayScreen implements Screen {
             }
         }
 
-        Gdx.app.debug("Wall: ", "("+x + "," + y + ")" );
+       //Gdx.app.debug("Wall: ", "("+x + "," + y + ")" );
         return free;
     }
 }

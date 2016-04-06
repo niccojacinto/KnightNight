@@ -40,6 +40,16 @@ public class Map {
       System.out.println(str);
     }
   }
+
+  //Returns an x-coordinate near by a certain x coordinate. It tries to make it not too close.
+  public int getXNear(int x) {
+    return MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(x - 10, x - 5) : MapGen.getRandomInt(x + 5, x + 10);
+  }
+
+  //Returns an y-coordinate near by a certain y coordinate. It tries to make it not too close.
+  public int getYNear(int y) {
+    return MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(y - 10, y - 5) : MapGen.getRandomInt(y + 5, y + 10);
+  }
   
   //Procedurally generate a fine Map.
   private void generateMap(){
@@ -70,14 +80,5 @@ public class Map {
     for (int i = 0; i < objects.size(); i++){
       objects.get(i).addToData(data);
     }
-  }
-
-  private int getRandomX() {
-
-    return MapGen.getRandomInt(0, width - 1);
-  }
-
-  private int getRandomY(){
-    return MapGen.getRandomInt(0, height - 1);
   }
 }
