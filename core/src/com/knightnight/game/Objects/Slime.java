@@ -54,7 +54,6 @@ public class Slime extends Sprite{
         lcf = 0f;
 
         setSize(32, 32);
-        setPosition(KnightNight.WIDTH / 2, KnightNight.HEIGHT / 2);
         initAnimations();
     }
 

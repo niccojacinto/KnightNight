@@ -37,7 +37,7 @@ public class PlayScreen implements Screen {
         game = _game;
         bg = new Texture("tavern.png");
         cam = new OrthographicCamera(KnightNight.WIDTH, KnightNight.HEIGHT);
-        cam.zoom -= 0.75f;
+        cam.zoom -= -1.0f;
         gameObjects = new ArrayList<Sprite>();
         enemies = new ArrayList<Slime>();
         map = new Map(50, 50);

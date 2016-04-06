@@ -28,12 +28,10 @@ public class Player extends Sprite{
     public Vector2 position;
     private Vector2 targetPos;
     ArrayList<Animation> animations;
-    //ArrayList<Texture> spritesheets;
     TextureRegion currentFrame;
     float animTime;
     float moveSpeed;
     boolean isFlipped;
-    float lerpTime;
     float lcf;
 
     public Player (KnightNight _game, int gridX, int gridY) {
@@ -46,7 +44,6 @@ public class Player extends Sprite{
         isFlipped = false;
 
         animations = new ArrayList<Animation>(PlayerState.values().length);
-        //spritesheets = new ArrayList<Texture>(PlayerState.values().length);
         //Gdx.app.debug(TAG, PlayerState.values().length + "");
 
         animTime = 0;
@@ -54,7 +51,6 @@ public class Player extends Sprite{
         lcf = 0f;
 
         setSize(32, 32);
-        setPosition(KnightNight.WIDTH / 2, KnightNight.HEIGHT / 2);
         initAnimations();
     }
 
@@ -125,7 +121,6 @@ public class Player extends Sprite{
             default:
                 break;
         }
-
     }
 
     public void update(float delta) {
