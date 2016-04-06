@@ -1,3 +1,5 @@
+package com.knightnight.game.MapGen;
+
 public enum Direction{
   LEFT(0), 
     UP(1),

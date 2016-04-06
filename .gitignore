@@ -69,3 +69,5 @@ build/
 *.class
 *~
 
+.idea/gradle.xml
+.idea/gradle.xml

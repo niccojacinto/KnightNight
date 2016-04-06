@@ -1,4 +1,6 @@
-class Main {
+package com.knightnight.game.MapGen;
+
+class MainTest {
   public static void main(String [ ] args)
   {
     
