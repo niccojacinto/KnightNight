@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.knightnight.game.KnightNight;
+import com.knightnight.game.MapGen.MapConstants;
 import com.knightnight.game.Objects.Floor;
 import com.knightnight.game.Objects.Player;
 import com.knightnight.game.Objects.Slime;
@@ -115,16 +116,26 @@ public class PlayScreen implements Screen {
             for (int y = 0; y  < mapHeight; ++y) {
                 char s = map[x][y];
                 switch (s) {
-                    case '|':
+                    case MapConstants.WALL:
                         Wall tmpw = new Wall(game, x, y);
                         gameObjects.add(tmpw);
                         //Gdx.app.debug("Wall: ", "Created Wall");
                         break;
-                    case '-':
-                        Floor tmpf = new Floor(game, x, y);
-                        gameObjects.add(tmpf);
+                    case MapConstants.FLOOR:
+                        {
+                            Floor tmpf = new Floor(game, x, y);
+                            gameObjects.add(tmpf);
+                        }
                         break;
-                    case '@':
+                    case MapConstants.STARTPOINT:
+                    case MapConstants.ENDPOINT:
+                    case MapConstants.KEY:
+                        {
+                            Floor tmpf = new Floor(game, x, y);
+                            gameObjects.add(tmpf);
+                        }
+                        break;
+                    case MapConstants.VOID:
                         Void tmpv = new Void(game, x, y);
                         gameObjects.add(tmpv);
                         break;

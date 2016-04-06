@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /*A tile-based Map consisting of Rooms and Halls.*/
 public class Map {
-  private static final char VOID = '@';
+  private static final char VOID = MapConstants.VOID;
   
   //Map size
   private int width;
