@@ -26,14 +26,12 @@ public class Player extends Sprite{
 
     public Vector2 gridPosition;
     public Vector2 position;
-    private Vector2 targetPos;
+
     ArrayList<Animation> animations;
-    //ArrayList<Texture> spritesheets;
     TextureRegion currentFrame;
     float animTime;
     float moveSpeed;
     boolean isFlipped;
-    float lerpTime;
     float lcf;
 
     public Player (KnightNight _game, int gridX, int gridY) {
@@ -46,7 +44,6 @@ public class Player extends Sprite{
         isFlipped = false;
 
         animations = new ArrayList<Animation>(PlayerState.values().length);
-        //spritesheets = new ArrayList<Texture>(PlayerState.values().length);
         //Gdx.app.debug(TAG, PlayerState.values().length + "");
 
         animTime = 0;
@@ -54,8 +51,8 @@ public class Player extends Sprite{
         lcf = 0f;
 
         setSize(32, 32);
-        setPosition(KnightNight.WIDTH / 2, KnightNight.HEIGHT / 2);
         initAnimations();
+        setOriginCenter();
     }
 
     private void initAnimations() {
@@ -103,29 +100,36 @@ public class Player extends Sprite{
         playerState = PlayerState.WALKING;
         switch (dir) {
             case LEFT:
-                if (PlayScreen.isFree((int)gridPosition.x-1, (int)gridPosition.y) == 1) { gridPosition.x--; }
-                else if (PlayScreen.isFree((int)gridPosition.x-1, (int)gridPosition.y) == 0) {playerState = PlayerState.ATTACKING;}
+                move(-1,0);
                 isFlipped = true;
                 break;
             case RIGHT:
-                if (PlayScreen.isFree((int)gridPosition.x+1, (int)gridPosition.y) == 1) { gridPosition.x++; }
-                else if (PlayScreen.isFree((int)gridPosition.x+1, (int)gridPosition.y) == 0) {playerState = PlayerState.ATTACKING;}
+                move(1,0);
                 isFlipped = false;
                 break;
             case UP:
-                if (PlayScreen.isFree((int)gridPosition.x, (int)gridPosition.y+1)== 1) { gridPosition.y++; }
-                else if (PlayScreen.isFree((int)gridPosition.x, (int)gridPosition.y+1) == 0) {playerState = PlayerState.ATTACKING;}
+                move(0,1);
                 isFlipped = false;
                 break;
             case DOWN:
-                if (PlayScreen.isFree((int)gridPosition.x, (int)gridPosition.y-1) == 1) {gridPosition.y--;}
-                else if (PlayScreen.isFree((int)gridPosition.x, (int)gridPosition.y-1) == 0) {playerState = PlayerState.ATTACKING;}
+                move(0,-1);
                 isFlipped = true;
                 break;
             default:
                 break;
         }
+    }
 
+    private void move(int x, int y) {
+        int gridX = (int)gridPosition.x + x;
+        int gridY = (int)gridPosition.y + y;
+
+        if (PlayScreen.isFree(gridX, gridY) == 1) {
+            gridPosition.x+=x;
+            gridPosition.y+=y;
+        } else if (PlayScreen.isFree(gridX, gridY) == 0) {
+            playerState = PlayerState.ATTACKING;
+        }
     }
 
     public void update(float delta) {
@@ -133,7 +137,6 @@ public class Player extends Sprite{
         if (lcf >= 1 && playerState != PlayerState.ATTACKING) {
             playerState = PlayerState.IDLE;
             lcf = 0;
-
         }
 
         lcf += 2 * delta;

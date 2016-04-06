@@ -17,6 +17,7 @@ public class Floor extends Sprite {
         game = _game;
         setPosition(x * 32, y * 32);
         setSize(32, 32);
+        setOriginCenter();
     }
 
 }

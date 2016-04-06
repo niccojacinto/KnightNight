@@ -1,6 +1,7 @@
 package com.knightnight.game.Objects;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -53,8 +54,9 @@ public class Slime extends Sprite{
         moveSpeed = 16.0f;
         lcf = 0f;
 
+        // setColor(Color.PINK);
+        setOriginCenter();
         setSize(32, 32);
-        setPosition(KnightNight.WIDTH / 2, KnightNight.HEIGHT / 2);
         initAnimations();
     }
 

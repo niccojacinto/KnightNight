@@ -28,21 +28,20 @@ public class PlayScreen implements Screen {
     private static ArrayList<Slime> enemies;
     private OrthographicCamera cam;
     private KnightNight game;
-    private Texture bg;
+    // private Texture bg;
     private Player player;
     private Map map;
     private static char[][] mapGrid;
     public PlayScreen(KnightNight _game) {
 
         game = _game;
-        bg = new Texture("tavern.png");
+        // bg = new Texture("tavern.png");
         cam = new OrthographicCamera(KnightNight.WIDTH, KnightNight.HEIGHT);
-        cam.zoom = 2f;
+        cam.zoom = 0.5f;
         gameObjects = new ArrayList<Sprite>();
         enemies = new ArrayList<Slime>();
         map = new Map(50, 50);
         loadMap(map.getData());
-
         spawnSlimes(6);
     }
 
@@ -57,7 +56,7 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
 
-        game.batch.draw(bg, 0, 0);
+        // game.batch.draw(bg, 0, 0);
 
         for (int w = 0; w < gameObjects.size(); ++w) {
             gameObjects.get(w).draw(game.batch);
@@ -120,6 +119,8 @@ public class PlayScreen implements Screen {
                         break;
                     case MapConstants.STARTPOINT:
                         player = new Player(game, x, y);
+                        enemies.add(new Slime(game, x+3,y+3));
+                        enemies.add(new Slime(game, x-3,y-3));
                     case MapConstants.ENDPOINT:
                     case MapConstants.KEY:
                     case MapConstants.FLOOR:
@@ -179,7 +180,7 @@ public class PlayScreen implements Screen {
             }
         }
 
-       //Gdx.app.debug("Wall: ", "("+x + "," + y + ")" );
+       // Gdx.app.debug("Wall: ", "("+x + "," + y + ")" );
         return free;
     }
 }
