@@ -43,8 +43,7 @@ public class PlayScreen implements Screen {
         map = new Map(50, 50);
         loadMap(map.getData());
 
-        enemies.add(new Slime(game, 1,1));
-        enemies.add(new Slime(game, 3,3));
+        spawnSlimes(5);
     }
 
     @Override
@@ -142,10 +141,22 @@ public class PlayScreen implements Screen {
         gameObjects.add(tmpf);
     }
 
+    private void spawnSlimes(int number) {
+        for (int i = 0; i < number; i++ ){
+            int x =
+            enemies.add(new Slime)
+        }
+        enemies.add(new Slime(game, 1,1));
+        enemies.add(new Slime(game, 3,3));
+    }
+
+    //Returns 1 if the tile is a floor.
+    //Returns 0 if there's an enemy on this tile.
+    //Returns -1 if it's out of bounds OR it's a void OR static object like a wall.
     public static int isFree(int x, int y) {
         int free = -1;
         if (x < 0 || x > mapGrid[0].length-1 || y < 0 || y > mapGrid.length-1) return free;
-        if ((mapGrid[x][y] == '-') || (mapGrid[x][y] == '@')) {
+        if (mapGrid[x][y] == MapConstants.FLOOR) {
             free = 1;
         }
 

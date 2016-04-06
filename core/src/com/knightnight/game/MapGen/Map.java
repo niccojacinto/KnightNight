@@ -46,7 +46,7 @@ public class Map {
     rooms = new ArrayList<Room>(); 
     halls = new ArrayList<Hall>();
     objects = new ArrayList<SpecialObject>();
-    MapGen.generateMap(rooms, halls, objects, new Room(0, 0, width-1, height-1, -1));
+    MapGen.generateMap(rooms, halls, objects, new Room(0, 0, width - 1, height - 1, -1));
   }//public void generateMap(){
   
   //Inserts the room and hall data into the char array.
@@ -70,5 +70,14 @@ public class Map {
     for (int i = 0; i < objects.size(); i++){
       objects.get(i).addToData(data);
     }
+  }
+
+  private int getRandomX() {
+
+    return MapGen.getRandomInt(0, width - 1);
+  }
+
+  private int getRandomY(){
+    return MapGen.getRandomInt(0, height - 1);
   }
 }

@@ -6,14 +6,14 @@ import java.util.ArrayList;
 public class MapGen{
   private static Random rng = new Random();
   
-  private static final int ROOM_WIDTH_MIN = 7;
-  private static final int ROOM_WIDTH_MAX = 16;
-  private static final int ROOM_HEIGHT_MIN = 7;
-  private static final int ROOM_HEIGHT_MAX = 16;
-  private static final int HALL_SHORT_SIDE_MIN = 3;
-  private static final int HALL_SHORT_SIDE_MAX = 6;
-  private static final int HALL_LONG_SIDE_MIN = 6;
-  private static final int HALL_LONG_SIDE_MAX = 17;
+  private static final int ROOM_WIDTH_MIN = MapConstants.ROOM_WIDTH_MIN;
+  private static final int ROOM_WIDTH_MAX = MapConstants.ROOM_WIDTH_MAX;
+  private static final int ROOM_HEIGHT_MIN = MapConstants.ROOM_HEIGHT_MIN;
+  private static final int ROOM_HEIGHT_MAX = MapConstants.ROOM_HEIGHT_MAX;
+  private static final int HALL_SHORT_SIDE_MIN = MapConstants.HALL_SHORT_SIDE_MIN;
+  private static final int HALL_SHORT_SIDE_MAX = MapConstants.HALL_SHORT_SIDE_MAX;
+  private static final int HALL_LONG_SIDE_MIN = MapConstants.HALL_LONG_SIDE_MIN;
+  private static final int HALL_LONG_SIDE_MAX = MapConstants.HALL_LONG_SIDE_MAX;
   
   //Procedurally generate a fine Map.
   public static void generateMap(ArrayList<Room> closedRooms, ArrayList<Hall> halls, ArrayList<SpecialObject> objects,
@@ -108,7 +108,7 @@ public class MapGen{
     
     //3c. Calculate Hall and Room dimensions
     int hallShortSide = getRandomInt(HALL_SHORT_SIDE_MIN, HALL_SHORT_SIDE_MAX_ADJUSTED);
-    int hallLongSide = getRandomInt(HALL_LONG_SIDE_MIN, HALL_LONG_SIDE_MIN);
+    int hallLongSide = getRandomInt(HALL_LONG_SIDE_MIN, HALL_LONG_SIDE_MAX);
     //Short side of Room corresponds to the Hall's short side.
     //These values will be converted into 'width' and 'height' in the generateRoomAt() function.
     int roomShortSide = getRandomInt(ROOM_SHORT_SIDE_MIN_ADJUSTED,
