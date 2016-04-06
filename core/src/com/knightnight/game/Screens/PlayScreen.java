@@ -6,9 +6,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.knightnight.game.KnightNight;
+import com.knightnight.game.Objects.Floor;
 import com.knightnight.game.Objects.Player;
+import com.knightnight.game.Objects.Slime;
 import com.knightnight.game.Objects.Wall;
+import com.knightnight.game.Objects.Void;
+import com.knightnight.game.MapGen.Map;
 
 import java.util.ArrayList;
 
@@ -19,19 +24,28 @@ import java.util.ArrayList;
 public class PlayScreen implements Screen {
 
     private ArrayList<Sprite> gameObjects;
+    private static ArrayList<Slime> enemies;
     private OrthographicCamera cam;
     private KnightNight game;
     private Texture bg;
     private Player player;
-    // private Map map;
+    private Map map;
+    private static char[][] mapGrid;
 
     public PlayScreen(KnightNight _game) {
         game = _game;
         bg = new Texture("tavern.png");
-        player = new Player(game);
         cam = new OrthographicCamera(KnightNight.WIDTH, KnightNight.HEIGHT);
-        cam.zoom -= 0.5f;
+        cam.zoom -= 0.75f;
         gameObjects = new ArrayList<Sprite>();
+        enemies = new ArrayList<Slime>();
+        map = new Map(50, 50);
+        loadMap(map.getData());
+
+
+        player = new Player(game);
+        enemies.add(new Slime(game, 1,1));
+        enemies.add(new Slime(game, 3,3));
     }
 
     @Override
@@ -45,8 +59,14 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
 
+        game.batch.draw(bg, 0, 0);
+
         for (int w = 0; w < gameObjects.size(); ++w) {
             gameObjects.get(w).draw(game.batch);
+        }
+
+        for (int e = 0; e < enemies.size(); ++e) {
+            enemies.get(e).render(delta);
         }
 
         if (Gdx.input.justTouched()) {
@@ -57,7 +77,6 @@ public class PlayScreen implements Screen {
         cam.position.set(player.position.x, player.position.y, 0);
         cam.update();
 
-        game.batch.draw(bg, 0, 0);
         player.render(delta);
         game.batch.end();
     }
@@ -88,6 +107,7 @@ public class PlayScreen implements Screen {
     }
 
     private void loadMap(char[][] map) {
+        mapGrid = map;
         int mapWidth = map[0].length;
         int mapHeight = map.length;
 
@@ -95,14 +115,42 @@ public class PlayScreen implements Screen {
             for (int y = 0; y  < mapHeight; ++y) {
                 char s = map[x][y];
                 switch (s) {
-                    case 'W':
-                        Wall tmp = new Wall(game, x, y);
+                    case '|':
+                        Wall tmpw = new Wall(game, x, y);
+                        gameObjects.add(tmpw);
+                        //Gdx.app.debug("Wall: ", "Created Wall");
+                        break;
+                    case '-':
+                        Floor tmpf = new Floor(game, x, y);
+                        gameObjects.add(tmpf);
+                        break;
+                    case '@':
+                        Void tmpv = new Void(game, x, y);
+                        gameObjects.add(tmpv);
                         break;
                     default:
                         break;
                 }
             }
         }
+    }
 
+    public static int isFree(int x, int y) {
+        int free = -1;
+        if (x < 0 || x > mapGrid[0].length-1 || y < 0 || y > mapGrid.length-1) return free;
+        if ((mapGrid[x][y] == '-') || (mapGrid[x][y] == '@')) {
+            free = 1;
+        }
+
+        for (int e = 0; e < enemies.size(); ++e) {
+            Gdx.app.debug("Wall: ", "("+enemies.get(e).gridPosition.x + "," + enemies.get(e).gridPosition.y + ")" );
+            if (enemies.get(e).gridPosition.equals(new Vector2(x, y))) {
+                free = 0;
+
+            }
+        }
+
+        Gdx.app.debug("Wall: ", "("+x + "," + y + ")" );
+        return free;
     }
 }

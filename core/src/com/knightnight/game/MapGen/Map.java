@@ -3,7 +3,7 @@ package com.knightnight.game.MapGen;
 import java.util.ArrayList;
 
 /*A tile-based Map consisting of Rooms and Halls.*/
-class Map {
+public class Map {
   private static final char VOID = '@';
   
   //Map size

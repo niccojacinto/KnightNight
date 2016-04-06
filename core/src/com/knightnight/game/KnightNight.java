@@ -23,7 +23,7 @@ public class KnightNight extends Game {
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		batch = new SpriteBatch();
-		setScreen(new PlayScreen(this));
+		setScreen(new TitleScreen(this));
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.knightnight.game.KnightNight;
+import com.knightnight.game.Screens.PlayScreen;
 import com.knightnight.game.Util.Direction;
 import java.lang.*;
 
@@ -52,7 +53,7 @@ public class Player extends Sprite{
         moveSpeed = 32.0f;
         lcf = 0f;
 
-        setSize(64, 64);
+        setSize(32, 32);
         setPosition(KnightNight.WIDTH / 2, KnightNight.HEIGHT / 2);
         initAnimations();
     }
@@ -74,6 +75,16 @@ public class Player extends Sprite{
         tmpAnim = new Animation(0.25f, animFrames);
         animations.add(tmpAnim);
 
+        animFrames = new TextureRegion[6];
+        animFrames[0] = new TextureRegion((new Texture("Hero/hero_attack0000.png")));
+        animFrames[1] = new TextureRegion((new Texture("Hero/hero_attack0001.png")));
+        animFrames[2] = new TextureRegion((new Texture("Hero/hero_attack0002.png")));
+        animFrames[3] = new TextureRegion((new Texture("Hero/hero_attack0003.png")));
+        animFrames[4] = new TextureRegion((new Texture("Hero/hero_attack0004.png")));
+        animFrames[5] = new TextureRegion((new Texture("Hero/hero_attack0005.png")));
+        tmpAnim = new Animation(0.1f, animFrames);
+        animations.add(tmpAnim);
+
     }
 
     public void onTap(int x, int y) {
@@ -89,33 +100,37 @@ public class Player extends Sprite{
 
     private void move(Direction dir) {
         lcf=0;
-
+        playerState = PlayerState.WALKING;
         switch (dir) {
             case LEFT:
-                gridPosition.x--;
+                if (PlayScreen.isFree((int)gridPosition.x-1, (int)gridPosition.y) == 1) { gridPosition.x--; }
+                else if (PlayScreen.isFree((int)gridPosition.x-1, (int)gridPosition.y) == 0) {playerState = PlayerState.ATTACKING;}
                 isFlipped = true;
                 break;
             case RIGHT:
-                gridPosition.x++;
+                if (PlayScreen.isFree((int)gridPosition.x+1, (int)gridPosition.y) == 1) { gridPosition.x++; }
+                else if (PlayScreen.isFree((int)gridPosition.x+1, (int)gridPosition.y) == 0) {playerState = PlayerState.ATTACKING;}
                 isFlipped = false;
                 break;
             case UP:
-                gridPosition.y++;
+                if (PlayScreen.isFree((int)gridPosition.x, (int)gridPosition.y+1)== 1) { gridPosition.y++; }
+                else if (PlayScreen.isFree((int)gridPosition.x, (int)gridPosition.y+1) == 0) {playerState = PlayerState.ATTACKING;}
                 isFlipped = false;
                 break;
             case DOWN:
-                gridPosition.y--;
+                if (PlayScreen.isFree((int)gridPosition.x, (int)gridPosition.y-1) == 1) {gridPosition.y--;}
+                else if (PlayScreen.isFree((int)gridPosition.x, (int)gridPosition.y-1) == 0) {playerState = PlayerState.ATTACKING;}
                 isFlipped = true;
                 break;
             default:
                 break;
         }
-        playerState = PlayerState.WALKING;
+
     }
 
     public void update(float delta) {
         animTime += Gdx.graphics.getDeltaTime();
-        if (lcf >= 1) {
+        if (lcf >= 1 && playerState != PlayerState.ATTACKING) {
             playerState = PlayerState.IDLE;
             lcf = 0;
 
@@ -125,6 +140,7 @@ public class Player extends Sprite{
         // Gdx.app.debug(TAG, "lcf: " + lcf);
         position.set(position.lerp(new Vector2(gridPosition.x *32, gridPosition.y*32), lcf));
         setPosition(position.x, position.y);
+
     }
 
 
