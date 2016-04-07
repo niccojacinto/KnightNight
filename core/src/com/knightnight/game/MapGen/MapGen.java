@@ -16,7 +16,7 @@ public class MapGen{
   private static final int HALL_LONG_SIDE_MAX = MapConstants.HALL_LONG_SIDE_MAX;
   
   //Procedurally generate a fine Map.
-  public static void generateMap(ArrayList<Room> closedRooms, ArrayList<Hall> halls, ArrayList<SpecialObject> objects,
+  public static boolean generateMap(ArrayList<Room> closedRooms, ArrayList<Hall> halls, ArrayList<SpecialObject> objects,
                                  Room mapBounds){
     //0. Set up variables
     ArrayList<Room> openRooms = new ArrayList<Room>();
@@ -60,9 +60,13 @@ public class MapGen{
       }//if
     }//while(openRooms.size() != 0)
     
-    System.out.println("Map generated!");
+    //5a If there are less than 3 rooms, than this ain't no Map at all.
+    if (closedRooms.size() < 3){
+      System.out.println("5a. Failed to generate a map with three rooms. Aborting.");
+      return false;
+    }
     
-    //5a. Add a start and end point to the Map!
+    //5b. Add a start and end point to the Map!
     {
       objects.add(new SpecialObject(startingRoom.getCenterX(), startingRoom.getCenterY(), ObjectType.STARTPOINT));
       Room endRoom = getRoomWithMaxDepth(closedRooms);
@@ -71,6 +75,8 @@ public class MapGen{
       objects.add(new SpecialObject(keyRoom.getCenterX(), keyRoom.getCenterY(), ObjectType.KEY));
     }
     
+    System.out.println("5c. Map generated!");
+    return true;
   }//public void generateMap(){
   
   //Returns a pseudo random number between the two ranges inclusive.

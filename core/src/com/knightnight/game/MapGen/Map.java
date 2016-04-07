@@ -43,20 +43,30 @@ public class Map {
 
   //Returns an x-coordinate near by a certain x coordinate. It tries to make it not too close.
   public int getXNear(int x) {
-    return MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(x - 10, x - 5) : MapGen.getRandomInt(x + 5, x + 10);
+    return MapGen.getRandomInt(x - 5, x + 5);
+    //return MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(x - 10, x - 5) : MapGen.getRandomInt(x + 5, x + 10);
   }
 
   //Returns an y-coordinate near by a certain y coordinate. It tries to make it not too close.
   public int getYNear(int y) {
-    return MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(y - 10, y - 5) : MapGen.getRandomInt(y + 5, y + 10);
+    return MapGen.getRandomInt(y - 5, y + 5);
+    //return MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(y - 10, y - 5) : MapGen.getRandomInt(y + 5, y + 10);
   }
   
   //Procedurally generate a fine Map.
   private void generateMap(){
-    rooms = new ArrayList<Room>(); 
-    halls = new ArrayList<Hall>();
-    objects = new ArrayList<SpecialObject>();
-    MapGen.generateMap(rooms, halls, objects, new Room(0, 0, width - 1, height - 1, -1));
+    int failures = 0;
+    do
+    {
+      rooms = new ArrayList<Room>(); 
+      halls = new ArrayList<Hall>();
+      objects = new ArrayList<SpecialObject>();
+      if (failures++ >= 100){
+         throw new Error("Failed over 100 times trying to create a playable level. "
+                           +"Something must be off with the mapgen constants or map size- "
+                           + "width: " + width + ", height: " + height);
+      }
+    }while (!MapGen.generateMap(rooms, halls, objects, new Room(0, 0, width - 1, height - 1, -1)));
   }//public void generateMap(){
   
   //Inserts the room and hall data into the char array.

@@ -41,8 +41,8 @@ public class PlayScreen implements Screen {
         gameObjects = new ArrayList<Sprite>();
         enemies = new ArrayList<Slime>();
         map = new Map(50, 50);
+        map.out();
         loadMap(map.getData());
-        spawnSlimes(6);
     }
 
     @Override
@@ -119,8 +119,6 @@ public class PlayScreen implements Screen {
                         break;
                     case MapConstants.STARTPOINT:
                         player = new Player(game, x, y);
-                        enemies.add(new Slime(game, x+3,y+3));
-                        enemies.add(new Slime(game, x-3,y-3));
                     case MapConstants.ENDPOINT:
                     case MapConstants.KEY:
                     case MapConstants.FLOOR:
@@ -135,6 +133,9 @@ public class PlayScreen implements Screen {
                 }
             }
         }
+
+        //I pray that this function works.
+        spawnSlimes(6);
     }
 
     private void makeAFloor(int x, int y) {
@@ -147,14 +148,15 @@ public class PlayScreen implements Screen {
             Gdx.app.debug("spawnSlime: ", "Player is null; slimes cannot be spawned.");
             return;
         }
+
         for (int i = 0; i < number; i++ ){
             //For every slime, it'll try 4 times to spawn it in a free location.
-            for (int attempts = 0; attempts < 8; attempts++) {
+            for (int attempts = 0; attempts < 50; attempts++) {
                 int x = map.getXNear((int) player.gridPosition.x);
                 int y = map.getYNear((int) player.gridPosition.y);
-                Gdx.app.debug("spawnSlime: ", "Checking coordinates ("+x + "," + y + "), result: " + isFree(x, y));
+                Gdx.app.debug("spawnSlime", "Checking coordinates ("+x + "," + y + "), result: " + isFree(x, y));
                 if (isFree(x, y) == 1) {
-                    Gdx.app.debug("spawnSlime: ", "Created ("+x + "," + y + ")" );
+                    Gdx.app.debug("spawnSlime", "Created ("+x + "," + y + ")" );
                     enemies.add(new Slime(game, x, y));
                     break;
                 }
@@ -173,7 +175,7 @@ public class PlayScreen implements Screen {
         }
 
         for (int e = 0; e < enemies.size(); ++e) {
-            Gdx.app.debug("Wall: ", "("+enemies.get(e).gridPosition.x + "," + enemies.get(e).gridPosition.y + ")" );
+            // Gdx.app.debug("Wall: ", "("+enemies.get(e).gridPosition.x + "," + enemies.get(e).gridPosition.y + ")" );
             if (enemies.get(e).gridPosition.equals(new Vector2(x, y))) {
                 free = 0;
 

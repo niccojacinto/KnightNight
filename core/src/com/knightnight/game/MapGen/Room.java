@@ -7,7 +7,7 @@ class Room {
   private static final int MIN_WIDTH = 3;
   private static final int MIN_HEIGHT = 3;
   
-  private static final char FLOOR = MapConstants.FLOOR;
+  protected static final char FLOOR = MapConstants.FLOOR;
   private static final char WALL = MapConstants.WALL;
   
   //x and y represents top-left corner
