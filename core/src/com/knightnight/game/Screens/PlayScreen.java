@@ -23,6 +23,7 @@ import java.util.ArrayList;
  * Created by nix_j on 3/31/2016.
  */
 public class PlayScreen implements Screen {
+    public static final int NUMBER_OF_TAPS_TO_SPAWN_SLIMES = 30;
 
     private ArrayList<Sprite> gameObjects;
     private static ArrayList<Slime> enemies;
@@ -103,6 +104,10 @@ public class PlayScreen implements Screen {
 
     }
 
+    public void spawnSlimesNearPlayer() {
+        spawnSlimes(2);
+    }
+
     private void loadMap(char[][] map) {
         mapGrid = map;
         int mapWidth = map[0].length;
@@ -119,8 +124,14 @@ public class PlayScreen implements Screen {
                         break;
                     case MapConstants.STARTPOINT:
                         player = new Player(game, x, y);
+                        makeAFloor(x,y);
+                        break;
                     case MapConstants.ENDPOINT:
+                        makeAFloor(x,y);
+                        break;
                     case MapConstants.KEY:
+                        makeAFloor(x,y);
+                        break;
                     case MapConstants.FLOOR:
                         makeAFloor(x,y);
                         break;
@@ -135,7 +146,7 @@ public class PlayScreen implements Screen {
         }
 
         //I pray that this function works.
-        spawnSlimes(10);
+        spawnSlimes(2);
     }
 
     private void makeAFloor(int x, int y) {
