@@ -36,6 +36,7 @@ public class Player extends Sprite{
     float lcf;
 
     private int tapCounter;
+    private boolean hasKey;
 
     public Player (KnightNight _game, int gridX, int gridY) {
         super();
@@ -55,6 +56,7 @@ public class Player extends Sprite{
         lcf = 0f;
 
         tapCounter = 0;
+        hasKey = false;
 
         setSize(32, 32);
         initAnimations();
@@ -136,12 +138,20 @@ public class Player extends Sprite{
         int gridX = (int)gridPosition.x + x;
         int gridY = (int)gridPosition.y + y;
 
-        int isFreeVal = PlayScreen.isFree(gridX, gridY);
+        int isFreeVal = ((PlayScreen)(game.getScreen())).isFree(gridX, gridY);
         Gdx.app.debug(TAG, "Moving to:  " + isFreeVal);
+        boolean headingToKey = isFreeVal == PlayScreen.ISFREE_KEY;
+        boolean levelComplete = isFreeVal == PlayScreen.ISFREE_ENDPOINT && hasKey;
 
-        if (isFreeVal == -2) {
+        if (isFreeVal == PlayScreen.ISFREE_FLOOR || headingToKey || levelComplete) {
             gridPosition.x+=x;
             gridPosition.y+=y;
+            if (headingToKey) {
+                ((PlayScreen)(game.getScreen())).destroyKey();
+                hasKey = true;
+            } else if (levelComplete){
+                ((PlayScreen)(game.getScreen())).endLevel();
+            }
         } else if (isFreeVal >= 0) {
             attack(PlayScreen.getEnemy(isFreeVal));
         }

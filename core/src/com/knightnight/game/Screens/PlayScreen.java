@@ -14,6 +14,8 @@ import com.knightnight.game.Objects.Player;
 import com.knightnight.game.Objects.Slime;
 import com.knightnight.game.Objects.Wall;
 import com.knightnight.game.Objects.Void;
+import com.knightnight.game.Objects.Key;
+import com.knightnight.game.Objects.Chest;
 import com.knightnight.game.MapGen.Map;
 
 import java.util.ArrayList;
@@ -31,6 +33,8 @@ public class PlayScreen implements Screen {
     private KnightNight game;
     // private Texture bg;
     private Player player;
+    private Key key;
+    private Chest chest;
     private Map map;
     private static char[][] mapGrid;
     public PlayScreen(KnightNight _game) {
@@ -130,9 +134,13 @@ public class PlayScreen implements Screen {
                         break;
                     case MapConstants.ENDPOINT:
                         makeAFloor(x,y);
+                        chest = new Chest(game, x, y);
+                        gameObjects.add(chest);
                         break;
                     case MapConstants.KEY:
                         makeAFloor(x,y);
+                        key = new Key(game, x, y);
+                        gameObjects.add(key);
                         break;
                     case MapConstants.FLOOR:
                         makeAFloor(x,y);
@@ -170,7 +178,7 @@ public class PlayScreen implements Screen {
                 int x = map.getXNear((int) player.gridPosition.x, versionHelper);
                 int y = map.getYNear((int) player.gridPosition.y, !versionHelper);
                 versionHelper = !versionHelper;
-                if (isFree(x, y) == -2) {
+                if (isFree(x, y) == ISFREE_FLOOR) {
                     Gdx.app.debug("spawnSlime", "Created ("+x + "," + y + ")" );
                     enemies.add(new Slime(game, x, y));
                     break;
@@ -179,19 +187,34 @@ public class PlayScreen implements Screen {
         }
     }
 
+    public static final int ISFREE_FLOOR= -2;
+    public static final int ISFREE_KEY= -3;
+    public static final int ISFREE_ENDPOINT= -4;
+    public static final int ISFREE_DEFAULT= -1;
     //Returns -2 if the tile is a floor.
     //Returns index of enemy if there's an enemy on this tile.
     //Returns -1 if it's out of bounds OR it's a void OR static object like a wall.
-    public static int isFree(int x, int y) {
+    public int isFree(int x, int y) {
 
-        int free = -1;
+        int free = ISFREE_DEFAULT;
         // Check Map Size
         if (x < 0 || x > mapGrid[0].length-1 || y < 0 || y > mapGrid.length-1) return -1;
 
         // Check Tile Type
-        if (mapGrid[x][y] == MapConstants.FLOOR) {
-            free = -2;
+        if (mapGrid[x][y] == MapConstants.FLOOR || mapGrid[x][y] == MapConstants.STARTPOINT) {
+            free = ISFREE_FLOOR;
         }
+
+        // Check Key
+        if (key != null && x == key.X() && y == key.Y()) {
+            return ISFREE_KEY;
+        }
+
+        // Check Endpoint
+        if (chest != null && x == chest.X() && y == chest.Y()) {
+            return ISFREE_ENDPOINT;
+        }
+
 
         // Check spawned enemies
         for (int e = 0; e < enemies.size(); ++e) {
@@ -204,6 +227,15 @@ public class PlayScreen implements Screen {
        // Gdx.app.debug("Wall: ", "("+x + "," + y + ")" );
     }
 
+    public void destroyKey(){
+        gameObjects.remove(key);
+        key = null;
+    }
+
+    public void endLevel(){
+        //Game is won!!
+        Gdx.app.debug("Game", "Player has successfully completed the level!!!" );
+    }
     public static Slime getEnemy(int index) {
         return enemies.get(index);
     }
