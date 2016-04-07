@@ -1,6 +1,8 @@
 package com.knightnight.game.Objects;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -34,6 +36,7 @@ public class Player extends Sprite{
     float moveSpeed;
     boolean isFlipped;
     float lcf;
+    Sound slice;
 
     private int tapCounter;
 
@@ -49,6 +52,7 @@ public class Player extends Sprite{
 
         animations = new ArrayList<Animation>(PlayerState.values().length);
         //Gdx.app.debug(TAG, PlayerState.values().length + "");
+        slice = Gdx.audio.newSound(Gdx.files.internal("slice.mp3"));
 
         animTime = 0;
         moveSpeed = 32.0f;
@@ -149,7 +153,10 @@ public class Player extends Sprite{
 
     private void attack(Slime enemy) {
         if (playerState == PlayerState.ATTACKING) return;
+        slice.play();
         animTime = 0;
+        // Testing hits, remove later
+        enemy.setColor(Color.RED);
         playerState = PlayerState.ATTACKING;
 
         // currAnim.setPlayMode(Animation.PlayMode.NORMAL);
