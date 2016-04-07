@@ -135,7 +135,7 @@ public class PlayScreen implements Screen {
         }
 
         //I pray that this function works.
-        spawnSlimes(6);
+        spawnSlimes(10);
     }
 
     private void makeAFloor(int x, int y) {
@@ -150,11 +150,14 @@ public class PlayScreen implements Screen {
         }
 
         for (int i = 0; i < number; i++ ){
-            //For every slime, it'll try 4 times to spawn it in a free location.
-            for (int attempts = 0; attempts < 50; attempts++) {
-                int x = map.getXNear((int) player.gridPosition.x);
-                int y = map.getYNear((int) player.gridPosition.y);
-                Gdx.app.debug("spawnSlime", "Checking coordinates ("+x + "," + y + "), result: " + isFree(x, y));
+            boolean versionHelper = false;
+            //It'll try 10 times to spawn this Slime.
+            //Version helper is used to improve where the Slimes are spawned. It works like magic.
+            for (int attempts = 0; attempts < 10; attempts++) {
+                int x = map.getXNear((int) player.gridPosition.x, versionHelper);
+                int y = map.getYNear((int) player.gridPosition.y, !versionHelper);
+                versionHelper = !versionHelper;
+
                 if (isFree(x, y) == 1) {
                     Gdx.app.debug("spawnSlime", "Created ("+x + "," + y + ")" );
                     enemies.add(new Slime(game, x, y));

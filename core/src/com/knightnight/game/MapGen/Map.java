@@ -41,16 +41,21 @@ public class Map {
     }
   }
 
-  //Returns an x-coordinate near by a certain x coordinate. It tries to make it not too close.
-  public int getXNear(int x) {
-    return MapGen.getRandomInt(x - 5, x + 5);
-    //return MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(x - 10, x - 5) : MapGen.getRandomInt(x + 5, x + 10);
+  //Returns an x-coordinate near by a certain x coordinate.
+  //There are two versions: v1 returns a coordinate around a given x value.
+  //v2 returns a coordinate a lot lower or higher than the given x value.
+  public int getXNear(int x, boolean v1) {
+    return v1
+            ? MapGen.getRandomInt(x - 5, x + 5)
+            : MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(x - 10, x - 4) : MapGen.getRandomInt(x + 4, x + 10);
   }
 
-  //Returns an y-coordinate near by a certain y coordinate. It tries to make it not too close.
-  public int getYNear(int y) {
-    return MapGen.getRandomInt(y - 5, y + 5);
-    //return MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(y - 10, y - 5) : MapGen.getRandomInt(y + 5, y + 10);
+  //Returns an y-coordinate near by a certain y coordinate.
+  //Refer to the getXNear method for how 'v1' works.
+  public int getYNear(int y, boolean v1) {
+    return v1
+            ? MapGen.getRandomInt(y - 5, y + 5)
+            : MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(y - 10, y - 4) : MapGen.getRandomInt(y + 4, y + 10);
   }
   
   //Procedurally generate a fine Map.
