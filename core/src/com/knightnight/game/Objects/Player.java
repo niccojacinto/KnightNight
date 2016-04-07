@@ -25,7 +25,7 @@ public class Player extends Sprite{
     PlayerState playerState;
 
     public Vector2 gridPosition;
-    public Vector2 position;
+    private Vector2 position;
 
     ArrayList<Animation> animations;
     TextureRegion currentFrame;
@@ -39,8 +39,9 @@ public class Player extends Sprite{
         game = _game;
         playerState = PlayerState.IDLE;
 
-        position = new Vector2(64, 64); // ???
+        setCenterX(8);
         gridPosition = new Vector2(gridX, gridY);
+        setPosition(gridX*32, gridY*32);
         isFlipped = false;
 
         animations = new ArrayList<Animation>(PlayerState.values().length);
@@ -53,6 +54,7 @@ public class Player extends Sprite{
         setSize(32, 32);
         initAnimations();
         setOriginCenter();
+
     }
 
     private void initAnimations() {
@@ -124,16 +126,35 @@ public class Player extends Sprite{
         int gridX = (int)gridPosition.x + x;
         int gridY = (int)gridPosition.y + y;
 
-        if (PlayScreen.isFree(gridX, gridY) == 1) {
+        int isFreeVal = PlayScreen.isFree(gridX, gridY);
+        Gdx.app.debug(TAG, "Moving to:  " + isFreeVal);
+
+        if (isFreeVal == -2) {
             gridPosition.x+=x;
             gridPosition.y+=y;
-        } else if (PlayScreen.isFree(gridX, gridY) == 0) {
-            playerState = PlayerState.ATTACKING;
+        } else if (isFreeVal >= 0) {
+            attack(PlayScreen.getEnemy(isFreeVal));
         }
     }
 
+    private void attack(Slime enemy) {
+        if (playerState == PlayerState.ATTACKING) return;
+        animTime = 0;
+        playerState = PlayerState.ATTACKING;
+
+        // currAnim.setPlayMode(Animation.PlayMode.NORMAL);
+    }
+
     public void update(float delta) {
+        Animation currAnim =  animations.get(playerState.ordinal());
+
         animTime += Gdx.graphics.getDeltaTime();
+        if (playerState != playerState.IDLE) {
+            if (currAnim.isAnimationFinished(animTime)) {
+                playerState = PlayerState.IDLE;
+            }
+        }
+
         if (lcf >= 1 && playerState != PlayerState.ATTACKING) {
             playerState = PlayerState.IDLE;
             lcf = 0;
@@ -141,8 +162,10 @@ public class Player extends Sprite{
 
         lcf += 2 * delta;
         // Gdx.app.debug(TAG, "lcf: " + lcf);
-        position.set(position.lerp(new Vector2(gridPosition.x *32, gridPosition.y*32), lcf));
-        setPosition(position.x, position.y);
+        Vector2 tmp = new Vector2(getX(), getY());
+        tmp.set(tmp.lerp(new Vector2(gridPosition.x *32, gridPosition.y*32), lcf));
+        setPosition(tmp.x, tmp.y);
+
 
     }
 

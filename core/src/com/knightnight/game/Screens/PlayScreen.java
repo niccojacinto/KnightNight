@@ -56,6 +56,7 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
 
+
         // game.batch.draw(bg, 0, 0);
 
         for (int w = 0; w < gameObjects.size(); ++w) {
@@ -70,11 +71,12 @@ public class PlayScreen implements Screen {
             player.onTap(Gdx.input.getX(), Gdx.input.getY());
         }
 
-        game.batch.setProjectionMatrix(cam.combined);
-        cam.position.set(player.position.x, player.position.y, 0);
-        cam.update();
 
         player.render(delta);
+
+        cam.position.set(player.getX(), player.getY(), 0);
+        game.batch.setProjectionMatrix(cam.combined);
+        cam.update();
         game.batch.end();
     }
 
@@ -152,8 +154,8 @@ public class PlayScreen implements Screen {
             for (int attempts = 0; attempts < 8; attempts++) {
                 int x = map.getXNear((int) player.gridPosition.x);
                 int y = map.getYNear((int) player.gridPosition.y);
-                Gdx.app.debug("spawnSlime: ", "Checking coordinates ("+x + "," + y + "), result: " + isFree(x, y));
-                if (isFree(x, y) == 1) {
+                // Gdx.app.debug("spawnSlime: ", "Checking coordinates ("+x + "," + y + "), result: " + isFree(x, y));
+                if (isFree(x, y) == -2) {
                     Gdx.app.debug("spawnSlime: ", "Created ("+x + "," + y + ")" );
                     enemies.add(new Slime(game, x, y));
                     break;
@@ -162,25 +164,32 @@ public class PlayScreen implements Screen {
         }
     }
 
-    //Returns 1 if the tile is a floor.
-    //Returns 0 if there's an enemy on this tile.
+    //Returns -2 if the tile is a floor.
+    //Returns index of enemy if there's an enemy on this tile.
     //Returns -1 if it's out of bounds OR it's a void OR static object like a wall.
     public static int isFree(int x, int y) {
+
         int free = -1;
-        if (x < 0 || x > mapGrid[0].length-1 || y < 0 || y > mapGrid.length-1) return free;
+        // Check Map Size
+        if (x < 0 || x > mapGrid[0].length-1 || y < 0 || y > mapGrid.length-1) return -1;
+
+        // Check Tile Type
         if (mapGrid[x][y] == MapConstants.FLOOR) {
-            free = 1;
+            free = -2;
         }
 
+        // Check spawned enemies
         for (int e = 0; e < enemies.size(); ++e) {
-            Gdx.app.debug("Wall: ", "("+enemies.get(e).gridPosition.x + "," + enemies.get(e).gridPosition.y + ")" );
             if (enemies.get(e).gridPosition.equals(new Vector2(x, y))) {
-                free = 0;
-
+                return e;
             }
         }
 
-       // Gdx.app.debug("Wall: ", "("+x + "," + y + ")" );
         return free;
+       // Gdx.app.debug("Wall: ", "("+x + "," + y + ")" );
+    }
+
+    public static Slime getEnemy(int index) {
+        return enemies.get(index);
     }
 }
