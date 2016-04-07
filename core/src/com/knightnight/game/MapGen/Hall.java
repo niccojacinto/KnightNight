@@ -36,7 +36,7 @@ class Hall extends Room
   public void clearHall(char[][] data){
     for (int i = 0; i < width; i++){
       for (int j = 0; j < height; j++){
-         data[x + i][y + j] = 'X';
+         data[x + i][y + j] = FLOOR;
       }
     }
   }

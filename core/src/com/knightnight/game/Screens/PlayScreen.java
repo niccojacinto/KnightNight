@@ -23,6 +23,7 @@ import java.util.ArrayList;
  * Created by nix_j on 3/31/2016.
  */
 public class PlayScreen implements Screen {
+    public static final int NUMBER_OF_TAPS_TO_SPAWN_SLIMES = 30;
 
     private ArrayList<Sprite> gameObjects;
     private static ArrayList<Slime> enemies;
@@ -41,8 +42,8 @@ public class PlayScreen implements Screen {
         gameObjects = new ArrayList<Sprite>();
         enemies = new ArrayList<Slime>();
         map = new Map(50, 50);
+        map.out();
         loadMap(map.getData());
-        spawnSlimes(6);
     }
 
     @Override
@@ -105,6 +106,10 @@ public class PlayScreen implements Screen {
 
     }
 
+    public void spawnSlimesNearPlayer() {
+        spawnSlimes(2);
+    }
+
     private void loadMap(char[][] map) {
         mapGrid = map;
         int mapWidth = map[0].length;
@@ -121,10 +126,14 @@ public class PlayScreen implements Screen {
                         break;
                     case MapConstants.STARTPOINT:
                         player = new Player(game, x, y);
-                        enemies.add(new Slime(game, x+3,y+3));
-                        enemies.add(new Slime(game, x-3,y-3));
+                        makeAFloor(x,y);
+                        break;
                     case MapConstants.ENDPOINT:
+                        makeAFloor(x,y);
+                        break;
                     case MapConstants.KEY:
+                        makeAFloor(x,y);
+                        break;
                     case MapConstants.FLOOR:
                         makeAFloor(x,y);
                         break;
@@ -137,6 +146,9 @@ public class PlayScreen implements Screen {
                 }
             }
         }
+
+        //I pray that this function works.
+        spawnSlimes(2);
     }
 
     private void makeAFloor(int x, int y) {
@@ -149,14 +161,17 @@ public class PlayScreen implements Screen {
             Gdx.app.debug("spawnSlime: ", "Player is null; slimes cannot be spawned.");
             return;
         }
+
         for (int i = 0; i < number; i++ ){
-            //For every slime, it'll try 4 times to spawn it in a free location.
-            for (int attempts = 0; attempts < 8; attempts++) {
-                int x = map.getXNear((int) player.gridPosition.x);
-                int y = map.getYNear((int) player.gridPosition.y);
-                // Gdx.app.debug("spawnSlime: ", "Checking coordinates ("+x + "," + y + "), result: " + isFree(x, y));
+            boolean versionHelper = false;
+            //It'll try 10 times to spawn this Slime.
+            //Version helper is used to improve where the Slimes are spawned. It works like magic.
+            for (int attempts = 0; attempts < 10; attempts++) {
+                int x = map.getXNear((int) player.gridPosition.x, versionHelper);
+                int y = map.getYNear((int) player.gridPosition.y, !versionHelper);
+                versionHelper = !versionHelper;
                 if (isFree(x, y) == -2) {
-                    Gdx.app.debug("spawnSlime: ", "Created ("+x + "," + y + ")" );
+                    Gdx.app.debug("spawnSlime", "Created ("+x + "," + y + ")" );
                     enemies.add(new Slime(game, x, y));
                     break;
                 }

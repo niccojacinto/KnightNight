@@ -41,22 +41,37 @@ public class Map {
     }
   }
 
-  //Returns an x-coordinate near by a certain x coordinate. It tries to make it not too close.
-  public int getXNear(int x) {
-    return MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(x - 10, x - 5) : MapGen.getRandomInt(x + 5, x + 10);
+  //Returns an x-coordinate near by a certain x coordinate.
+  //There are two versions: v1 returns a coordinate around a given x value.
+  //v2 returns a coordinate a lot lower or higher than the given x value.
+  public int getXNear(int x, boolean v1) {
+    return v1
+            ? MapGen.getRandomInt(x - 5, x + 5)
+            : MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(x - 10, x - 4) : MapGen.getRandomInt(x + 4, x + 10);
   }
 
-  //Returns an y-coordinate near by a certain y coordinate. It tries to make it not too close.
-  public int getYNear(int y) {
-    return MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(y - 10, y - 5) : MapGen.getRandomInt(y + 5, y + 10);
+  //Returns an y-coordinate near by a certain y coordinate.
+  //Refer to the getXNear method for how 'v1' works.
+  public int getYNear(int y, boolean v1) {
+    return v1
+            ? MapGen.getRandomInt(y - 5, y + 5)
+            : MapGen.getRandomInt(0,1) == 0 ? MapGen.getRandomInt(y - 10, y - 4) : MapGen.getRandomInt(y + 4, y + 10);
   }
   
   //Procedurally generate a fine Map.
   private void generateMap(){
-    rooms = new ArrayList<Room>(); 
-    halls = new ArrayList<Hall>();
-    objects = new ArrayList<SpecialObject>();
-    MapGen.generateMap(rooms, halls, objects, new Room(0, 0, width - 1, height - 1, -1));
+    int failures = 0;
+    do
+    {
+      rooms = new ArrayList<Room>(); 
+      halls = new ArrayList<Hall>();
+      objects = new ArrayList<SpecialObject>();
+      if (failures++ >= 100){
+         throw new Error("Failed over 100 times trying to create a playable level. "
+                           +"Something must be off with the mapgen constants or map size- "
+                           + "width: " + width + ", height: " + height);
+      }
+    }while (!MapGen.generateMap(rooms, halls, objects, new Room(0, 0, width - 1, height - 1, -1)));
   }//public void generateMap(){
   
   //Inserts the room and hall data into the char array.

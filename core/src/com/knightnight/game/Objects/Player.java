@@ -13,6 +13,7 @@ import java.lang.*;
 
 import java.util.ArrayList;
 
+
 /**
  * Created by nix_j on 4/3/2016.
  */
@@ -34,6 +35,8 @@ public class Player extends Sprite{
     boolean isFlipped;
     float lcf;
 
+    private int tapCounter;
+
     public Player (KnightNight _game, int gridX, int gridY) {
         super();
         game = _game;
@@ -50,6 +53,8 @@ public class Player extends Sprite{
         animTime = 0;
         moveSpeed = 32.0f;
         lcf = 0f;
+
+        tapCounter = 0;
 
         setSize(32, 32);
         initAnimations();
@@ -95,6 +100,11 @@ public class Player extends Sprite{
         else dir = ( p.y <= 0 ) ? Direction.DOWN : Direction.UP;
 
         move(dir);
+
+        if (tapCounter++ >= PlayScreen.NUMBER_OF_TAPS_TO_SPAWN_SLIMES){
+            ((PlayScreen)(game.getScreen())).spawnSlimesNearPlayer();
+            tapCounter = 0;
+        }
     }
 
     private void move(Direction dir) {
