@@ -161,6 +161,7 @@ public class Player extends Sprite{
         animTime += Gdx.graphics.getDeltaTime();
         if (playerState != playerState.IDLE) {
             if (currAnim.isAnimationFinished(animTime)) {
+                animTime = 0;
                 playerState = PlayerState.IDLE;
             }
         }

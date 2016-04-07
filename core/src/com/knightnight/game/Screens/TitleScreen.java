@@ -1,7 +1,9 @@
 package com.knightnight.game.Screens;
 
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,7 +22,7 @@ import java.awt.Font;
  * Created by nix_j on 3/31/2016.
  */
 public class TitleScreen implements Screen {
-
+    Music music;
     private final String info = "[ Tap Screen to Continue ]";
     private BitmapFont fontTitle;
     private BitmapFont fontInfo;
@@ -44,6 +46,9 @@ public class TitleScreen implements Screen {
         parameter.size = 30;
         fontInfo = generator.generateFont(parameter);
         gl = new GlyphLayout(fontTitle, KnightNight.TITLE);
+        music = Gdx.audio.newMusic(Gdx.files.internal("darkworld.mp3"));
+        music.play();
+
     }
 
     @Override
