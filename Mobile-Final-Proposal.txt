@@ -1,0 +1,26 @@
+Participants:
+	Niccolo Jacinto
+	Chung Hoang
+
+Project Title: 
+	Knight Night
+
+Game Scenario:
+	Perspective: 2D, Top-down, Tile-based
+	Genre: Real-time, Rogue-like
+	Controls: Tap to move one tile.
+
+	The player traverse a dynamically generated, tile-based dungeon filled with slimes. In each floor, the player must find a key
+	and used it to unlock a chest in order to proceed to the next level.
+
+	The purpose is to to achieve a highscore by travelling as deep into the dungeon as possible while
+	killing monsters and collecting items.
+
+Game Architecture:
+	The game uses LibGDX's badlogic architecture as a base.
+
+Game Tools:
+	LibGDX
+	Android Studio
+
+
