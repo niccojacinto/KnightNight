@@ -36,6 +36,22 @@ public enum Direction{
     }
   }
   
+   public Direction reverse(){
+    switch(this){
+      case LEFT:
+        return RIGHT;
+      case UP:
+        return DOWN;
+      case RIGHT:
+        return LEFT;
+      case DOWN:
+        return UP;
+      default:
+        throw new Error("Unknown direction value: " + this);
+    }
+  }
+  
+  
   public static Direction getDirection(int index){
     for (Direction dir : Direction.values()) {
       if(dir.index() == index){
