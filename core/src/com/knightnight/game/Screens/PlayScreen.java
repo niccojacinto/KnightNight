@@ -5,8 +5,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.knightnight.game.KnightNight;
 import com.knightnight.game.MapGen.MapConstants;
 import com.knightnight.game.Objects.Floor;
@@ -29,6 +35,7 @@ public class PlayScreen implements Screen {
 
     private ArrayList<Sprite> gameObjects;
     private static ArrayList<Slime> enemies;
+
     private OrthographicCamera cam;
     private KnightNight game;
     // private Texture bg;
@@ -37,6 +44,20 @@ public class PlayScreen implements Screen {
     private Chest chest;
     private Map map;
     private static char[][] mapGrid;
+
+    private Stage stage;
+
+    private static ArrayList<Slime> disposable;
+    private float disposeTime = 10.0f;
+
+    public static int score;
+    BitmapFont scoreFont;
+    FreeTypeFontGenerator generator;
+    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+    GlyphLayout gl;
+    Label lblScore;
+    Label.LabelStyle lblStyle;
+
     public PlayScreen(KnightNight _game) {
 
         game = _game;
@@ -45,9 +66,32 @@ public class PlayScreen implements Screen {
         cam.zoom = 0.5f;
         gameObjects = new ArrayList<Sprite>();
         enemies = new ArrayList<Slime>();
+        disposable = new ArrayList<Slime>();
         map = new Map(50, 50);
         map.out();
         loadMap(map.getData());
+
+
+        score = 0;
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("font_blackwoodcastle.ttf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 75;
+        scoreFont = generator.generateFont(parameter); // font size 12 pixels
+        gl = new GlyphLayout(scoreFont, KnightNight.TITLE);
+
+        // FOR UI ELEMENTS
+        /*
+        stage = new Stage();
+        stage.getViewport().setCamera(cam);
+        stage.setViewport(new ExtendViewport(KnightNight.WIDTH, KnightNight.HEIGHT));
+        lblStyle = new Label.LabelStyle();
+        lblStyle.font = scoreFont;
+        lblScore = new Label(score+"",lblStyle);
+        lblScore.setBounds(0, 0, 20, 20);
+        lblScore.setFontScale(10.0f, 10.0f);
+
+        stage.addActor(lblScore);
+        */
     }
 
     @Override
@@ -57,6 +101,13 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        lblScore.setText(score+"");
+        if (disposeTime <= 0) {
+            updateCurrentEnemies();
+            disposeTime = 10.0f;
+        }
+
+
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
@@ -64,11 +115,11 @@ public class PlayScreen implements Screen {
 
         // game.batch.draw(bg, 0, 0);
 
-        for (int w = 0; w < gameObjects.size(); ++w) {
+        for (int w = gameObjects.size() - 1; w >= 0; --w) {
             gameObjects.get(w).draw(game.batch);
         }
 
-        for (int e = 0; e < enemies.size(); ++e) {
+        for (int e = enemies.size() - 1; e >= 0; --e) {
             enemies.get(e).render(delta);
         }
 
@@ -79,9 +130,11 @@ public class PlayScreen implements Screen {
 
         player.render(delta);
 
+
         cam.position.set(player.getX(), player.getY(), 0);
         game.batch.setProjectionMatrix(cam.combined);
         cam.update();
+        // stage.draw();
         game.batch.end();
     }
 
@@ -107,6 +160,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
+        generator.dispose();
 
     }
 
@@ -218,7 +272,9 @@ public class PlayScreen implements Screen {
 
         // Check spawned enemies
         for (int e = 0; e < enemies.size(); ++e) {
-            if (enemies.get(e).gridPosition.equals(new Vector2(x, y))) {
+            Slime enemy = enemies.get(e);
+            if (enemy == null) { return ISFREE_FLOOR; }
+            if (!enemy.isDead && enemy.gridPosition.equals(new Vector2(x, y))) {
                 return e;
             }
         }
@@ -238,5 +294,23 @@ public class PlayScreen implements Screen {
     }
     public static Slime getEnemy(int index) {
         return enemies.get(index);
+    }
+
+    public static void markForDeletion(Slime slime) {
+        if (disposable.contains(slime) || slime == null) {
+           return;
+        }
+        disposable.add(slime);
+    }
+
+    public void updateCurrentEnemies() {
+        for (int i =0; i < disposable.size(); ++i) {
+            Slime slime = enemies.get(i);
+            if (enemies.contains(slime)) {
+                enemies.remove(slime);
+            }
+        }
+
+        disposable.clear();
     }
 }

@@ -1,6 +1,7 @@
 package com.knightnight.game.Objects;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.knightnight.game.KnightNight;
+import com.knightnight.game.Screens.PlayScreen;
 import com.knightnight.game.Util.Direction;
 
 
@@ -21,15 +23,14 @@ import java.util.Random;
 public class Slime extends Sprite{
 
     private static final String TAG = "Slime: ";
-    Random rnd;
+    private static Random rnd =  new Random();
+    private static Sound hit;
 
     KnightNight game;
     enum SlimeState { IDLE, WALKING, ATTACKING, DEAD }
     SlimeState slimeState;
 
     public Vector2 gridPosition;
-    public Vector2 position;
-    private Vector2 targetPos;
     ArrayList<Animation> animations;
     TextureRegion currentFrame;
     float stateChangeTimer;
@@ -38,23 +39,26 @@ public class Slime extends Sprite{
     boolean isFlipped;
     float lcf;
 
+    public boolean isDead;
+
     public Slime(KnightNight _game, int x, int y) {
         super();
         game = _game;
         slimeState = SlimeState.IDLE;
 
-        position = new Vector2(x * 32, y * 32);
-        gridPosition = new Vector2(position.x/32, position.y/32);
+        setPosition(x * 32, y * 32);
+        gridPosition = new Vector2(getX()/32, getY()/32);
         isFlipped = true;
 
         animations = new ArrayList<Animation>(SlimeState.values().length);
-        rnd = new Random();
+        hit = Gdx.audio.newSound(Gdx.files.internal("slice.mp3"));
+        // rnd = new Random();
 
         animTime = 0;
         moveSpeed = 16.0f;
         lcf = 0f;
+        isDead = false;
 
-        // setColor(Color.PINK);
         setOriginCenter();
         setSize(32, 32);
         initAnimations();
@@ -92,30 +96,51 @@ public class Slime extends Sprite{
         else move(Direction.RIGHT);
     }
 
+
     private void move(Direction dir) {
         lcf=0;
-
+        slimeState = SlimeState.WALKING;
         switch (dir) {
             case LEFT:
-                gridPosition.x--;
-                isFlipped = false;
+                move(-1,0);
+                isFlipped = true;
                 break;
             case RIGHT:
-                gridPosition.x++;
-                isFlipped = true;
+                move(1,0);
+                isFlipped = false;
                 break;
             case UP:
-                gridPosition.y++;
-                isFlipped = true;
+                move(0,1);
+                isFlipped = false;
                 break;
             case DOWN:
-                gridPosition.y--;
-                isFlipped = false;
+                move(0,-1);
+                isFlipped = true;
                 break;
             default:
                 break;
         }
-        slimeState = SlimeState.WALKING;
+    }
+
+
+    private void move(int x, int y) {
+        int gridX = (int)gridPosition.x + x;
+        int gridY = (int)gridPosition.y + y;
+
+        int isFreeVal = ((PlayScreen)(game.getScreen())).isFree(gridX, gridY);
+
+        if (isFreeVal == PlayScreen.ISFREE_FLOOR) {
+            gridPosition.x += x;
+            gridPosition.y += y;
+        }
+    }
+
+    public void kill() {
+        if (isDead) return;
+        PlayScreen.score++;
+        hit.play();
+        isDead = true;
+        PlayScreen.markForDeletion(this);
     }
 
     public void update(float delta) {
@@ -134,12 +159,14 @@ public class Slime extends Sprite{
 
         lcf += 2 * delta;
         // Gdx.app.debug(TAG, "lcf: " + lcf);
-        position.set(position.lerp(new Vector2(gridPosition.x *32, gridPosition.y*32), lcf));
-        setPosition(position.x, position.y);
+        Vector2 tmp = new Vector2(getX(), getY());
+        tmp.set(tmp.lerp(new Vector2(gridPosition.x *32, gridPosition.y*32), lcf));
+        setPosition(tmp.x, tmp.y);
     }
 
 
     public void render(float delta) {
+        if (isDead) return;
         update(delta);
 
         currentFrame = animations.get(slimeState.ordinal()).getKeyFrame(animTime, true);
