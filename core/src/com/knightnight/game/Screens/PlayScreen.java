@@ -50,13 +50,13 @@ public class PlayScreen implements Screen {
     private static ArrayList<Slime> disposable;
     private float disposeTime = 10.0f;
 
-    public static int score;
-    BitmapFont scoreFont;
-    FreeTypeFontGenerator generator;
-    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
-    GlyphLayout gl;
-    Label lblScore;
-    Label.LabelStyle lblStyle;
+    //public static int score;
+    //BitmapFont scoreFont;
+    //FreeTypeFontGenerator generator;
+    //FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+    //GlyphLayout gl;
+    //Label lblScore;
+    //Label.LabelStyle lblStyle;
 
     public PlayScreen(KnightNight _game) {
 
@@ -72,12 +72,12 @@ public class PlayScreen implements Screen {
         loadMap(map.getData());
 
 
-        score = 0;
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("font_blackwoodcastle.ttf"));
-        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 75;
-        scoreFont = generator.generateFont(parameter); // font size 12 pixels
-        gl = new GlyphLayout(scoreFont, KnightNight.TITLE);
+        //score = 0;
+        //generator = new FreeTypeFontGenerator(Gdx.files.internal("font_blackwoodcastle.ttf"));
+        //parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        //parameter.size = 75;
+        //scoreFont = generator.generateFont(parameter); // font size 12 pixels
+        //gl = new GlyphLayout(scoreFont, KnightNight.TITLE);
 
         // FOR UI ELEMENTS
         /*
@@ -160,7 +160,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-        generator.dispose();
+        //generator.dispose();
 
     }
 
@@ -187,14 +187,14 @@ public class PlayScreen implements Screen {
                         makeAFloor(x,y);
                         break;
                     case MapConstants.ENDPOINT:
-                        makeAFloor(x,y);
                         chest = new Chest(game, x, y);
                         gameObjects.add(chest);
+                        makeAFloor(x,y);
                         break;
                     case MapConstants.KEY:
-                        makeAFloor(x,y);
                         key = new Key(game, x, y);
                         gameObjects.add(key);
+                        makeAFloor(x,y);
                         break;
                     case MapConstants.FLOOR:
                         makeAFloor(x,y);
@@ -273,7 +273,7 @@ public class PlayScreen implements Screen {
         // Check spawned enemies
         for (int e = 0; e < enemies.size(); ++e) {
             Slime enemy = enemies.get(e);
-            if (enemy == null) { return ISFREE_FLOOR; }
+            // if (enemy == null) { return ISFREE_FLOOR; }
             if (!enemy.isDead && enemy.gridPosition.equals(new Vector2(x, y))) {
                 return e;
             }

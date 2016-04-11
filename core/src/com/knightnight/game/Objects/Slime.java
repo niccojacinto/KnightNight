@@ -103,11 +103,11 @@ public class Slime extends Sprite{
         switch (dir) {
             case LEFT:
                 move(-1,0);
-                isFlipped = true;
+                isFlipped = false;
                 break;
             case RIGHT:
                 move(1,0);
-                isFlipped = false;
+                isFlipped = true;
                 break;
             case UP:
                 move(0,1);
@@ -137,7 +137,7 @@ public class Slime extends Sprite{
 
     public void kill() {
         if (isDead) return;
-        PlayScreen.score++;
+        // PlayScreen.score++;
         hit.play();
         isDead = true;
         PlayScreen.markForDeletion(this);
