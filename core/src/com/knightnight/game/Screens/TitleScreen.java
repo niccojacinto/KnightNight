@@ -65,6 +65,7 @@ public class TitleScreen implements Screen {
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
+       // game.batch.draw(bg, 0, 0, KnightNight.WIDTH, KnightNight.HEIGHT, KnightNight.WIDTH, KnightNight.HEIGHT);
         game.batch.draw(bg, 0, 0, KnightNight.WIDTH, KnightNight.HEIGHT, 0, 0, KnightNight.WIDTH, KnightNight.HEIGHT, false, false);
         fontTitle.draw(game.batch, KnightNight.TITLE, KnightNight.WIDTH/2 - gl.width/1.8f, KnightNight.HEIGHT/1.5f);
         gl.setText(fontInfo, info);

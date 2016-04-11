@@ -13,8 +13,11 @@ import com.knightnight.game.Screens.TitleScreen;
 public class KnightNight extends Game {
 
 	public static final String TITLE = "Knight Night";
-	public static final int WIDTH = 480;
-	public static final int HEIGHT = 800;
+
+	public static int WIDTH;
+	public static int HEIGHT;
+	//public static final int WIDTH = 480;
+	//public static final int HEIGHT = 800;
 
 	public SpriteBatch batch;
 	Texture img;
@@ -23,6 +26,8 @@ public class KnightNight extends Game {
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		batch = new SpriteBatch();
+		WIDTH = Gdx.graphics.getWidth();
+		HEIGHT = Gdx.graphics.getHeight();
 		setScreen(new TitleScreen(this));
 	}
 

@@ -162,12 +162,14 @@ public class Player extends Sprite{
     }
 
     private void attack(Slime enemy) {
-        if (playerState == PlayerState.ATTACKING) return;
+
+        if (playerState == PlayerState.ATTACKING || enemy.isDead) return;
         slice.play();
         animTime = 0;
         // Testing hits, remove later
-        enemy.setColor(Color.RED);
+        // enemy.setColor(Color.RED);
         playerState = PlayerState.ATTACKING;
+        enemy.kill();
 
         // currAnim.setPlayMode(Animation.PlayMode.NORMAL);
     }
@@ -208,8 +210,7 @@ public class Player extends Sprite{
         } else if (currentFrame.isFlipX() && !isFlipped) {
             currentFrame.flip(true, false);
         }
-
-
+        
         setRegion(currentFrame);
         draw(game.batch);
     }
