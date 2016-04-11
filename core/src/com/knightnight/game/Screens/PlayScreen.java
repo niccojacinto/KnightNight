@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * Created by nix_j on 3/31/2016.
  */
 public class PlayScreen implements Screen {
-    public static final int NUMBER_OF_TAPS_TO_SPAWN_SLIMES = 30;
+    public static final int NUMBER_OF_TAPS_TO_SPAWN_SLIMES = 2;
 
     private ArrayList<Sprite> gameObjects;
     private static ArrayList<Slime> enemies;
@@ -177,7 +177,8 @@ public class PlayScreen implements Screen {
             for (int y = 0; y  < mapHeight; ++y) {
                 char s = map[x][y];
                 switch (s) {
-                    case MapConstants.WALL:
+                    case MapConstants.HALL_WALL:
+                    case MapConstants.ROOM_WALL:
                         Wall tmpw = new Wall(game, x, y);
                         gameObjects.add(tmpw);
                         //Gdx.app.debug("Wall: ", "Created Wall");
@@ -291,6 +292,7 @@ public class PlayScreen implements Screen {
     public void endLevel(){
         //Game is won!!
         Gdx.app.debug("Game", "Player has successfully completed the level!!!" );
+        game.setScreen(new PlayScreen(game));
     }
     public static Slime getEnemy(int index) {
         return enemies.get(index);

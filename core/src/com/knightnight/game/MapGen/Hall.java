@@ -7,6 +7,7 @@ package com.knightnight.game.MapGen;
  * -The Hall extends the Room, but this doesn't make much semantic sense. Oh well!*/
 class Hall extends Room
 {
+  private static final char WALL = MapConstants.HALL_WALL;
   private Direction direction;
   public Hall(int mx, int my, int mss, int mls, Direction mdirection, int mdepth){
      super(mx,my,
@@ -26,9 +27,9 @@ class Hall extends Room
      //clearHall(data);
      drawFloor(data);
      if (direction.isHorizontal()){
-       drawHorizontalWalls(data);
+       drawHorizontalWalls(data, WALL);
      } else{
-       drawVerticalWalls(data);
+       drawVerticalWalls(data, WALL);
      }
   }
    
