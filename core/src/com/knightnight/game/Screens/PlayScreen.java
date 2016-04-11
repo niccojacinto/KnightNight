@@ -101,7 +101,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        lblScore.setText(score+"");
+        // lblScore.setText(score+"");
         if (disposeTime <= 0) {
             updateCurrentEnemies();
             disposeTime = 10.0f;
