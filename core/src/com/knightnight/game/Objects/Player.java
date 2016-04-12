@@ -24,6 +24,7 @@ public class Player extends Sprite{
     private static final String TAG = "Player: ";
 
     KnightNight game;
+    PlayScreen screen;
     enum PlayerState { IDLE, WALKING, ATTACKING, DEAD }
     PlayerState playerState;
 
@@ -39,11 +40,13 @@ public class Player extends Sprite{
     Sound slice;
 
     private int tapCounter;
+    private int pauseTimer;
     private boolean hasKey;
 
-    public Player (KnightNight _game, int gridX, int gridY) {
+    public Player (KnightNight _game, PlayScreen _screen, int gridX, int gridY) {
         super();
         game = _game;
+        screen = _screen;
         playerState = PlayerState.IDLE;
 
         setCenterX(8);
@@ -98,6 +101,11 @@ public class Player extends Sprite{
     }
 
     public void onTap(int x, int y)     {
+        if (screen.paused) {
+            return;
+        }
+
+
         Vector2 p = new Vector2(x-KnightNight.WIDTH/2, KnightNight.HEIGHT/1.3f-y);
         Direction dir;
 
@@ -108,7 +116,7 @@ public class Player extends Sprite{
         move(dir);
 
         if (tapCounter++ >= PlayScreen.NUMBER_OF_TAPS_TO_SPAWN_SLIMES){
-            ((PlayScreen)(game.getScreen())).spawnSlimesNearPlayer();
+            screen.spawnSlimesNearPlayer();
             tapCounter = 0;
         }
     }
@@ -142,7 +150,7 @@ public class Player extends Sprite{
         int gridX = (int)gridPosition.x + x;
         int gridY = (int)gridPosition.y + y;
 
-        int isFreeVal = ((PlayScreen)(game.getScreen())).isFree(gridX, gridY);
+        int isFreeVal = screen.isFree(gridX, gridY);
         Gdx.app.debug(TAG, "Moving to:  " + isFreeVal);
         boolean headingToKey = isFreeVal == PlayScreen.ISFREE_KEY;
         boolean levelComplete = isFreeVal == PlayScreen.ISFREE_ENDPOINT && hasKey;
@@ -151,10 +159,11 @@ public class Player extends Sprite{
             gridPosition.x+=x;
             gridPosition.y+=y;
             if (headingToKey) {
-                ((PlayScreen)(game.getScreen())).destroyKey();
+                screen.destroyKey();
                 hasKey = true;
             } else if (levelComplete){
-                ((PlayScreen)(game.getScreen())).endLevel();
+                screen.paused = true;
+                pauseTimer = 100; //I literally have no idea what unit this is in. It makes zero sense.
             }
         } else if (isFreeVal >= 0) {
             attack(PlayScreen.getEnemy(isFreeVal));
@@ -175,6 +184,12 @@ public class Player extends Sprite{
     }
 
     public void update(float delta) {
+        pauseTimer -= delta;
+        if (screen.paused && pauseTimer <= 0){
+            screen.endLevel();
+        }
+
+
         Animation currAnim =  animations.get(playerState.ordinal());
 
         animTime += Gdx.graphics.getDeltaTime();
