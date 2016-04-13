@@ -159,6 +159,7 @@ public class MapGen{
         System.out.println("4c. Created room of dimensions: w-" + newRoom.width() + ", h-" + newRoom.height()); 
         halls.add(newHall);
         openRooms.add(newRoom);
+        newRoom.closeSide(currentDirection.reverse());
         return;
       }
     } while (!areDimensionsBelowMinimum(hallShortSide, hallLongSide, roomShortSide, roomLongSide, currentDirection));

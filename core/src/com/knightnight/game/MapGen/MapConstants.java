@@ -9,8 +9,9 @@ public class MapConstants {
     public static final char KEY = 'K';
     public static final char STARTPOINT = 'S';
     public static final char VOID = '@';
-    public static final char WALL = '|';
-
+    public static final char ROOM_WALL = '|';
+    public static final char HALL_WALL = '&';
+    
     //Notes: These values include the walls of the room/hall itself.
     //So the minimum value of any of these constants is 3, because 1 tile is for the inside and the other 2 tiles are for the walls.
     public static final int ROOM_WIDTH_MIN = 5;

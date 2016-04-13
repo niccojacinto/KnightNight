@@ -27,6 +27,7 @@ public class Slime extends Sprite{
     private static Sound hit;
 
     KnightNight game;
+    PlayScreen screen;
     enum SlimeState { IDLE, WALKING, ATTACKING, DEAD }
     SlimeState slimeState;
 
@@ -41,9 +42,10 @@ public class Slime extends Sprite{
 
     public boolean isDead;
 
-    public Slime(KnightNight _game, int x, int y) {
+    public Slime(KnightNight _game,PlayScreen _screen, int x, int y) {
         super();
         game = _game;
+        screen = _screen;
         slimeState = SlimeState.IDLE;
 
         setPosition(x * 32, y * 32);
@@ -127,7 +129,7 @@ public class Slime extends Sprite{
         int gridX = (int)gridPosition.x + x;
         int gridY = (int)gridPosition.y + y;
 
-        int isFreeVal = ((PlayScreen)(game.getScreen())).isFree(gridX, gridY);
+        int isFreeVal = screen.isFree(gridX, gridY);
 
         if (isFreeVal == PlayScreen.ISFREE_FLOOR) {
             gridPosition.x += x;
@@ -150,6 +152,8 @@ public class Slime extends Sprite{
     }
 
     public void update(float delta) {
+        if (screen.paused) return;
+
         stateChangeTimer -= delta;
         if (stateChangeTimer <= 0) {
             int num = rnd.nextInt((5 - 2) + 1) + 2;

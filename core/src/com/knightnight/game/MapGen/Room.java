@@ -8,7 +8,7 @@ class Room {
   private static final int MIN_HEIGHT = 3;
   
   protected static final char FLOOR = MapConstants.FLOOR;
-  private static final char WALL = MapConstants.WALL;
+  private static final char WALL = MapConstants.ROOM_WALL;
   
   //x and y represents top-left corner
   protected int x; 
@@ -34,8 +34,8 @@ class Room {
   //Adds the Room to the Map's data.
   public void addToData(char[][] data){
     drawFloor(data);
-    drawHorizontalWalls(data);
-    drawVerticalWalls(data);
+    drawHorizontalWalls(data, WALL);
+    drawVerticalWalls(data, WALL);
   }
   
   /*Accessors*/
@@ -145,19 +145,19 @@ class Room {
     }
   }
   
-  protected void drawHorizontalWalls(char[][] data){
+  protected void drawHorizontalWalls(char[][] data, char val){
     for (int i=0; i < width;i++){
-      data[x + i][y] = WALL;
-      data[x + i][y + height - 1] = WALL;
+      data[x + i][y] = val;
+      data[x + i][y + height - 1] = val;
     }
   }
   
-  protected void drawVerticalWalls(char[][] data){
+  protected void drawVerticalWalls(char[][] data, char val){
     for (int i= 0; i < height;i++){ 
        //This redundantly draws over some Horizontal walls.
        //This is intentional, for scenarios when the Hall subclass calls only this function.
-       data[x][y + i] = WALL;
-       data[x + width - 1][y + i] = WALL;
+       data[x][y + i] = val;
+       data[x + width - 1][y + i] = val;
     }
   }
 }

@@ -32,6 +32,7 @@ import java.util.ArrayList;
  */
 public class PlayScreen implements Screen {
     public static final int NUMBER_OF_TAPS_TO_SPAWN_SLIMES = 30;
+    public boolean paused;
 
     private ArrayList<Sprite> gameObjects;
     private static ArrayList<Slime> enemies;
@@ -70,6 +71,7 @@ public class PlayScreen implements Screen {
         map = new Map(50, 50);
         map.out();
         loadMap(map.getData());
+        paused = false;
 
 
         //score = 0;
@@ -177,13 +179,14 @@ public class PlayScreen implements Screen {
             for (int y = 0; y  < mapHeight; ++y) {
                 char s = map[x][y];
                 switch (s) {
-                    case MapConstants.WALL:
+                    case MapConstants.HALL_WALL:
+                    case MapConstants.ROOM_WALL:
                         Wall tmpw = new Wall(game, x, y);
                         gameObjects.add(tmpw);
                         //Gdx.app.debug("Wall: ", "Created Wall");
                         break;
                     case MapConstants.STARTPOINT:
-                        player = new Player(game, x, y);
+                        player = new Player(game, this, x, y);
                         makeAFloor(x,y);
                         break;
                     case MapConstants.ENDPOINT:
@@ -234,7 +237,7 @@ public class PlayScreen implements Screen {
                 versionHelper = !versionHelper;
                 if (isFree(x, y) == ISFREE_FLOOR) {
                     Gdx.app.debug("spawnSlime", "Created ("+x + "," + y + ")" );
-                    enemies.add(new Slime(game, x, y));
+                    enemies.add(new Slime(game, this, x, y));
                     break;
                 }
             }
@@ -296,6 +299,7 @@ public class PlayScreen implements Screen {
     public void endLevel(){
         //Game is won!!
         Gdx.app.debug("Game", "Player has successfully completed the level!!!" );
+        game.setScreen(new PlayScreen(game));
     }
     public static Slime getEnemy(int index) {
         return enemies.get(index);
