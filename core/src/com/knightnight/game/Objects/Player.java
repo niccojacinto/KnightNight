@@ -193,7 +193,11 @@ public class Player extends Sprite{
     public void update(float delta) {
         pauseTimer -= delta;
         if (screen.paused && pauseTimer <= 0){
-            screen.endLevel();
+            if (playerState == PlayerState.DEAD){
+                screen.toTitleScreen();
+            } else {
+                screen.endLevel();
+            }
         }
 
         if (playerState == PlayerState.DEAD) { return; }
@@ -240,6 +244,8 @@ public class Player extends Sprite{
         health -= amount;
         if (health <= 0) {
             playerState = PlayerState.DEAD;
+            screen.paused = true;
+            pauseTimer = 100;
         }
     }
 

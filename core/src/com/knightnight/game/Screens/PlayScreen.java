@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -298,9 +299,22 @@ public class PlayScreen implements Screen {
 
     public void endLevel(){
         //Game is won!!
-        Gdx.app.debug("Game", "Player has successfully completed the level!!!" );
+        Gdx.app.debug("Game", "Player has successfully completed the level!!!");
         game.setScreen(new PlayScreen(game));
     }
+
+    public void toTitleScreen(){
+        //Game is won!!
+        Gdx.app.debug("Game", "Sending Player to title screen..." );
+        cam.zoom = 1.0f;
+        //cam.viewportHeight = KnightNight.HEIGHT;
+        //cam.viewportWidth = KnightNight.WIDTH;
+        cam.position.set(KnightNight.WIDTH / 2, KnightNight.HEIGHT / 2,0);
+        game.setScreen(new TitleScreen(game));
+        cam.update();
+    }
+
+
     public static Slime getEnemy(int index) {
         return enemies.get(index);
     }
