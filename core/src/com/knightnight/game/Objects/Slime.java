@@ -132,6 +132,8 @@ public class Slime extends Sprite{
         if (isFreeVal == PlayScreen.ISFREE_FLOOR) {
             gridPosition.x += x;
             gridPosition.y += y;
+        } else if (isFreeVal == PlayScreen.ISFREE_PLAYER) {
+            attack();
         }
     }
 
@@ -141,6 +143,10 @@ public class Slime extends Sprite{
         hit.play();
         isDead = true;
         PlayScreen.markForDeletion(this);
+    }
+
+    public void attack() {
+        PlayScreen.player.damage(1);
     }
 
     public void update(float delta) {

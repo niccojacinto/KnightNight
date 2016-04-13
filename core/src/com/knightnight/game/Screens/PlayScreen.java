@@ -39,7 +39,7 @@ public class PlayScreen implements Screen {
     private OrthographicCamera cam;
     private KnightNight game;
     // private Texture bg;
-    private Player player;
+    public static Player player;
     private Key key;
     private Chest chest;
     private Map map;
@@ -241,6 +241,7 @@ public class PlayScreen implements Screen {
         }
     }
 
+    public static final int ISFREE_PLAYER = -5;
     public static final int ISFREE_FLOOR= -2;
     public static final int ISFREE_KEY= -3;
     public static final int ISFREE_ENDPOINT= -4;
@@ -257,6 +258,10 @@ public class PlayScreen implements Screen {
         // Check Tile Type
         if (mapGrid[x][y] == MapConstants.FLOOR || mapGrid[x][y] == MapConstants.STARTPOINT) {
             free = ISFREE_FLOOR;
+        }
+
+        if (player.gridPosition.equals(new Vector2(x, y))) {
+            return ISFREE_PLAYER;
         }
 
         // Check Key

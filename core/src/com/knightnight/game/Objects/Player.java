@@ -41,6 +41,8 @@ public class Player extends Sprite{
     private int tapCounter;
     private boolean hasKey;
 
+    public int health;
+
     public Player (KnightNight _game, int gridX, int gridY) {
         super();
         game = _game;
@@ -65,6 +67,8 @@ public class Player extends Sprite{
         setSize(32, 32);
         initAnimations();
         setOriginCenter();
+
+        health = 1;
 
     }
 
@@ -95,9 +99,16 @@ public class Player extends Sprite{
         tmpAnim = new Animation(0.1f, animFrames);
         animations.add(tmpAnim);
 
+        animFrames = new TextureRegion[1];
+        animFrames[0] = new TextureRegion(new Texture("Hero/tombstone.png"));
+        tmpAnim = new Animation(5.0f, animFrames);
+        animations.add(tmpAnim);
+
     }
 
-    public void onTap(int x, int y)     {
+    public void onTap(int x, int y) {
+        if (playerState == PlayerState.DEAD) { return; }
+
         Vector2 p = new Vector2(x-KnightNight.WIDTH/2, KnightNight.HEIGHT/1.3f-y);
         Direction dir;
 
@@ -139,6 +150,7 @@ public class Player extends Sprite{
     }
 
     private void move(int x, int y) {
+
         int gridX = (int)gridPosition.x + x;
         int gridY = (int)gridPosition.y + y;
 
@@ -175,6 +187,7 @@ public class Player extends Sprite{
     }
 
     public void update(float delta) {
+        if (playerState == PlayerState.DEAD) { return; }
         Animation currAnim =  animations.get(playerState.ordinal());
 
         animTime += Gdx.graphics.getDeltaTime();
@@ -195,8 +208,6 @@ public class Player extends Sprite{
         Vector2 tmp = new Vector2(getX(), getY());
         tmp.set(tmp.lerp(new Vector2(gridPosition.x *32, gridPosition.y*32), lcf));
         setPosition(tmp.x, tmp.y);
-
-
     }
 
 
@@ -214,4 +225,12 @@ public class Player extends Sprite{
         setRegion(currentFrame);
         draw(game.batch);
     }
+
+    public void damage(int amount) {
+        health -= amount;
+        if (health <= 0) {
+            playerState = PlayerState.DEAD;
+        }
+    }
+
 }
